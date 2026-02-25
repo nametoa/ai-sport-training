@@ -26,3 +26,6 @@ data/fetch_meta.json
 
 # Generated training plan exports
 training_plans/
+
+# Root reference images (not needed in repo)
+/image*.png

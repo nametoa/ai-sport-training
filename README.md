@@ -8,9 +8,13 @@
 
 ## 截图预览
 
-| 仪表板 | 数据分析 | 训练计划 |
-|:---:|:---:|:---:|
-| VO2max / 负荷 / HRV / RHR | 多维图表 · 配速心率区间 | 周计划 · Todolist · 自动打卡 |
+<p align="center">
+<img src="snapshot/6728504350da12bc10f4973e239e5553.jpg" width="270" alt="仪表板">
+<img src="snapshot/54619b7a84fbdfd203bd6062c45f872c.jpg" width="270" alt="数据分析">
+<img src="snapshot/e088135ccddd889a95b787658514daae.jpg" width="270" alt="训练计划">
+</p>
+
+> 从左到右：仪表板（指标 + 图表）、数据分析（多维图表）、训练计划（Todolist + 自动打卡）
 
 ## 功能特性
 
