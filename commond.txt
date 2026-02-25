@@ -1,0 +1,7 @@
+启动仪表板（自动同步数据）:
+  python3 -m streamlit run streamlit_app.py
+
+手动更新数据:
+  python3 fetch_coros_data.py
+
+访问地址: http://localhost:8501

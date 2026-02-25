@@ -125,14 +125,74 @@ def fatigue_state_text(state: int) -> tuple[str, str]:
 # Page config
 # ──────────────────────────────────────────────
 st.set_page_config(page_title="COROS 训练仪表板", page_icon="🏃", layout="wide")
-st.markdown(
-    "<style>"
-    ".block-container{padding-top:1rem;padding-bottom:0}"
-    "div[data-testid='stMetric']{background:#1a1f2e;padding:12px 16px;border-radius:8px}"
-    ".stTabs [data-baseweb='tab-list']{gap:8px}"
-    "</style>",
-    unsafe_allow_html=True,
-)
+st.markdown("""<style>
+    .block-container { padding-top: 2.5rem; padding-bottom: 0; }
+    header[data-testid="stHeader"] { background: #0e1117; }
+    div[data-testid='stMetric'] {
+        background: #1a1f2e; padding: 14px 18px; border-radius: 10px;
+    }
+    div[data-testid='stMetricLabel'] > div > div > p {
+        font-size: 1rem !important; color: #e2e8f0 !important;
+    }
+    div[data-testid='stMetricValue'] > div {
+        font-size: 1.8rem !important; font-weight: 700 !important;
+    }
+    div[data-testid='stMetricDelta'] > div {
+        font-size: 0.85rem !important;
+    }
+
+    /* Tabs — cover all Streamlit versions */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 0; background: #111827; border-radius: 10px; padding: 4px;
+    }
+    .stTabs [data-baseweb="tab-list"] button,
+    .stTabs [data-baseweb="tab-list"] [data-baseweb="tab"] {
+        font-size: 1.05rem !important; font-weight: 600 !important;
+        padding: 12px 28px !important; border-radius: 8px !important;
+        color: #94a3b8 !important; border: none !important;
+        background: transparent !important;
+    }
+    .stTabs [data-baseweb="tab-list"] button[aria-selected="true"],
+    .stTabs [data-baseweb="tab-list"] [data-baseweb="tab"][aria-selected="true"] {
+        color: #00d4aa !important;
+        background: rgba(0,212,170,0.12) !important;
+    }
+    .stTabs [data-baseweb="tab-list"] button:hover,
+    .stTabs [data-baseweb="tab-list"] [data-baseweb="tab"]:hover {
+        color: #f1f5f9 !important;
+        background: rgba(255,255,255,0.06) !important;
+    }
+    /* hide the default underline indicator */
+    .stTabs [data-baseweb="tab-highlight"] {
+        background-color: #00d4aa !important; height: 3px !important;
+    }
+    .stTabs [data-baseweb="tab-border"] {
+        display: none;
+    }
+
+    .todo-done { text-decoration: line-through; color: #6b7280; }
+</style>""", unsafe_allow_html=True)
+
+# ──────────────────────────────────────────────
+# Auto-sync on startup (once per session)
+# ──────────────────────────────────────────────
+if "data_synced" not in st.session_state:
+    import subprocess, logging
+    with st.spinner("正在同步 COROS 数据..."):
+        try:
+            result = subprocess.run(
+                ["python3", str(Path(__file__).parent / "fetch_coros_data.py")],
+                capture_output=True, text=True, timeout=120,
+            )
+            if result.returncode == 0:
+                new_lines = [l for l in result.stderr.splitlines() if "new" in l.lower() or "added" in l.lower() or "refreshed" in l.lower()]
+                summary = " · ".join(new_lines[-3:]) if new_lines else "数据已是最新"
+                st.toast(f"数据同步完成: {summary}", icon="✅")
+            else:
+                st.toast("数据同步失败，使用本地缓存", icon="⚠️")
+        except Exception as e:
+            st.toast(f"同步超时，使用本地缓存", icon="⚠️")
+    st.session_state.data_synced = True
 
 # ──────────────────────────────────────────────
 # Load data
@@ -247,7 +307,7 @@ with tab_dashboard:
                 "负荷": a.get("trainingLoad", "--"),
             })
         if rows:
-            st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True, height=290)
+            st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True, height=290)
 
     with col_week:
         st.subheader("本周汇总")
@@ -314,7 +374,7 @@ with tab_dashboard:
                     "负荷": s.get("trainingLoad", 0),
                 })
             if rows:
-                st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+                st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True)
 
 
 # ═══════════════════════════════════════════════
@@ -327,41 +387,39 @@ with tab_analysis:
         df_days = pd.DataFrame(day_list)
         df_days["date_str"] = df_days["happenDay"].apply(fmt_date)
 
-        # Row 1: Training load trend + VO2max trend
-        col_tl, col_vo2 = st.columns(2)
+        ncols = st.radio("每行图表数", [2, 3, 4], horizontal=True, index=0, key="analysis_cols")
+        chart_h = {2: 320, 3: 280, 4: 240}[ncols]
 
-        with col_tl:
-            st.subheader("每日训练负荷")
+        def _render_chart(fig):
+            st.plotly_chart(fig, use_container_width=True)
+
+        # ── chart builders (lazy list) ──
+        def chart_training_load():
+            st.markdown("**每日训练负荷**")
             fig = go.Figure()
             fig.add_bar(x=df_days["date_str"], y=df_days["trainingLoad"],
                         marker_color="#00d4aa", name="训练负荷")
             if "recomendTlMax" in df_days.columns:
                 fig.add_scatter(x=df_days["date_str"], y=df_days["recomendTlMax"],
-                                mode="lines", line=dict(color="rgba(255,107,107,0.4)", dash="dot"),
-                                name="建议上限")
+                                mode="lines", line=dict(color="rgba(255,107,107,0.4)", dash="dot"), name="建议上限")
                 fig.add_scatter(x=df_days["date_str"], y=df_days["recomendTlMin"],
-                                mode="lines", line=dict(color="rgba(107,203,119,0.4)", dash="dot"),
-                                name="建议下限")
-            fig.update_layout(**PLOTLY_LAYOUT, height=300)
-            st.plotly_chart(fig, use_container_width=True)
+                                mode="lines", line=dict(color="rgba(107,203,119,0.4)", dash="dot"), name="建议下限")
+            fig.update_layout(**PLOTLY_LAYOUT, height=chart_h)
+            _render_chart(fig)
 
-        with col_vo2:
-            st.subheader("最大摄氧量 (VO2max)")
+        def chart_vo2max():
+            st.markdown("**最大摄氧量 (VO2max)**")
             vo2_data = df_days[df_days["vo2max"] > 0]
             if not vo2_data.empty:
-                fig = px.line(vo2_data, x="date_str", y="vo2max", height=300,
-                              markers=True)
+                fig = px.line(vo2_data, x="date_str", y="vo2max", height=chart_h, markers=True)
                 fig.update_traces(line_color="#60a5fa")
                 fig.update_layout(**PLOTLY_LAYOUT, yaxis_title="VO2max")
-                st.plotly_chart(fig, use_container_width=True)
+                _render_chart(fig)
             else:
                 st.info("无 VO2max 数据")
 
-        # Row 2: RHR + 7d/28d load trends
-        col_rhr2, col_load2 = st.columns(2)
-
-        with col_rhr2:
-            st.subheader("静息心率趋势")
+        def chart_rhr():
+            st.markdown("**静息心率趋势**")
             rhr_data = df_days[df_days["rhr"] > 0] if "rhr" in df_days.columns else pd.DataFrame()
             if not rhr_data.empty:
                 fig = go.Figure()
@@ -371,109 +429,77 @@ with tab_analysis:
                     test_rhr = rhr_data[rhr_data["testRhr"] > 0]
                     if not test_rhr.empty:
                         fig.add_scatter(x=test_rhr["date_str"], y=test_rhr["testRhr"],
-                                        mode="lines", line=dict(color="#fbbf24", dash="dash"),
-                                        name="测试RHR")
-                fig.update_layout(**PLOTLY_LAYOUT, height=300)
-                st.plotly_chart(fig, use_container_width=True)
+                                        mode="lines", line=dict(color="#fbbf24", dash="dash"), name="测试RHR")
+                fig.update_layout(**PLOTLY_LAYOUT, height=chart_h)
+                _render_chart(fig)
 
-        with col_load2:
-            st.subheader("7天 / 28天 训练负荷")
+        def chart_7d_28d():
+            st.markdown("**7天 / 28天 训练负荷**")
             fig = go.Figure()
-            fig.add_scatter(x=df_days["date_str"], y=df_days["t7d"],
-                            mode="lines", line_color="#00d4aa", name="7天负荷")
-            fig.add_scatter(x=df_days["date_str"], y=df_days["t28d"],
-                            mode="lines", line_color="#60a5fa", name="28天负荷")
-            fig.update_layout(**PLOTLY_LAYOUT, height=300)
-            st.plotly_chart(fig, use_container_width=True)
+            fig.add_scatter(x=df_days["date_str"], y=df_days["t7d"], mode="lines", line_color="#00d4aa", name="7天负荷")
+            fig.add_scatter(x=df_days["date_str"], y=df_days["t28d"], mode="lines", line_color="#60a5fa", name="28天负荷")
+            fig.update_layout(**PLOTLY_LAYOUT, height=chart_h)
+            _render_chart(fig)
 
-        # Row 3: Weekly volume + intensity distribution
-        col_week_vol, col_intensity = st.columns(2)
-
-        with col_week_vol:
-            st.subheader("周训练量")
-            analyse_record = analyse_raw.get("record", {})
-            dist_record = analyse_record.get("distanceRecord", {})
-            dist_weeks = dist_record.get("detailList", [])
+        def chart_weekly_vol():
+            st.markdown("**周训练量**")
+            dist_weeks = analyse_raw.get("record", {}).get("distanceRecord", {}).get("detailList", [])
             if dist_weeks:
                 df_w = pd.DataFrame(dist_weeks)
-                df_w["week_label"] = df_w["firstDayOfWeek"].apply(
-                    lambda x: fmt_date(x) if x else ""
-                )
+                df_w["week_label"] = df_w["firstDayOfWeek"].apply(lambda x: fmt_date(x) if x else "")
                 df_w["km"] = df_w["value"] / 1000
                 fig = go.Figure()
-                fig.add_bar(x=df_w["week_label"], y=df_w["km"],
-                            marker_color="#00d4aa", name="距离(km)")
-                fig.update_layout(**PLOTLY_LAYOUT, height=300, yaxis_title="km")
-                st.plotly_chart(fig, use_container_width=True)
+                fig.add_bar(x=df_w["week_label"], y=df_w["km"], marker_color="#00d4aa", name="距离(km)")
+                fig.update_layout(**PLOTLY_LAYOUT, height=chart_h, yaxis_title="km")
+                _render_chart(fig)
 
-        with col_intensity:
-            st.subheader("4 周强度分布")
+        def chart_intensity():
+            st.markdown("**4 周强度分布**")
             tl_detail = tl_intensity.get("detailList", [])
             if tl_detail:
                 df_tl = pd.DataFrame(tl_detail)
                 df_tl["period"] = df_tl.apply(
-                    lambda r: f"{fmt_date(r['firstDayOfWeek'])}~{fmt_date(r['lastDayInWeek'])}",
-                    axis=1,
-                )
+                    lambda r: f"{fmt_date(r['firstDayOfWeek'])}~{fmt_date(r['lastDayInWeek'])}", axis=1)
                 fig = go.Figure()
-                fig.add_bar(x=df_tl["period"], y=df_tl["periodLowValue"],
-                            name="低强度", marker_color="#22c55e")
-                fig.add_bar(x=df_tl["period"], y=df_tl["periodMediumValue"],
-                            name="中强度", marker_color="#eab308")
-                fig.add_bar(x=df_tl["period"], y=df_tl["periodHighValue"],
-                            name="高强度", marker_color="#ef4444")
-                fig.update_layout(**PLOTLY_LAYOUT, barmode="stack", height=300)
-                st.plotly_chart(fig, use_container_width=True)
+                fig.add_bar(x=df_tl["period"], y=df_tl["periodLowValue"], name="低强度", marker_color="#22c55e")
+                fig.add_bar(x=df_tl["period"], y=df_tl["periodMediumValue"], name="中强度", marker_color="#eab308")
+                fig.add_bar(x=df_tl["period"], y=df_tl["periodHighValue"], name="高强度", marker_color="#ef4444")
+                fig.update_layout(**PLOTLY_LAYOUT, barmode="stack", height=chart_h)
+                _render_chart(fig)
 
-        # Row 4: Pace zone + HR zone distribution
-        col_pace, col_hr = st.columns(2)
-
-        with col_pace:
-            st.subheader("配速区间分布")
+        def chart_pace_zone():
+            st.markdown("**配速区间分布**")
             dis_area = summary_info_analyse.get("disAreaList", [])
             if dis_area:
-                labels = PACE_ZONE_LABELS[: len(dis_area)]
-                values = [a["ratio"] for a in dis_area]
                 fig = go.Figure(go.Pie(
-                    labels=labels, values=values,
-                    hole=0.45,
-                    marker_colors=["#22c55e", "#3b82f6", "#eab308", "#f97316", "#ef4444", "#8b5cf6", "#6b7280"],
-                ))
-                fig.update_layout(**PLOTLY_LAYOUT, height=300)
-                st.plotly_chart(fig, use_container_width=True)
+                    labels=PACE_ZONE_LABELS[:len(dis_area)], values=[a["ratio"] for a in dis_area], hole=0.45,
+                    marker_colors=["#22c55e", "#3b82f6", "#eab308", "#f97316", "#ef4444", "#8b5cf6", "#6b7280"]))
+                fig.update_layout(**PLOTLY_LAYOUT, height=chart_h)
+                _render_chart(fig)
 
-        with col_hr:
-            st.subheader("心率区间分布")
+        def chart_hr_zone():
+            st.markdown("**心率区间分布**")
             hr_area = summary_info_analyse.get("hrDisAreaList", [])
             if hr_area:
-                labels = HR_ZONE_LABELS[: len(hr_area)]
-                values = [a["ratio"] for a in hr_area]
                 fig = go.Figure(go.Pie(
-                    labels=labels, values=values,
-                    hole=0.45,
-                    marker_colors=["#94a3b8", "#22c55e", "#eab308", "#f97316", "#ef4444"],
-                ))
-                fig.update_layout(**PLOTLY_LAYOUT, height=300)
-                st.plotly_chart(fig, use_container_width=True)
+                    labels=HR_ZONE_LABELS[:len(hr_area)], values=[a["ratio"] for a in hr_area], hole=0.45,
+                    marker_colors=["#94a3b8", "#22c55e", "#eab308", "#f97316", "#ef4444"]))
+                fig.update_layout(**PLOTLY_LAYOUT, height=chart_h)
+                _render_chart(fig)
 
-        # Row 5: Fatigue rate + Training load ratio
-        col_fat, col_ratio = st.columns(2)
-
-        with col_fat:
-            st.subheader("疲劳趋势 (TIB)")
+        def chart_fatigue():
+            st.markdown("**疲劳趋势 (TIB)**")
             if "tiredRateNew" in df_days.columns:
                 fig = go.Figure()
                 colors = df_days["tiredRateNew"].apply(
-                    lambda v: "#ef4444" if v > 30 else "#eab308" if v > 10 else "#22c55e"
-                ).tolist()
-                fig.add_bar(x=df_days["date_str"], y=df_days["tiredRateNew"],
-                            marker_color=colors, name="疲劳指数")
+                    lambda v: "#ef4444" if v > 30 else "#eab308" if v > 10 else "#22c55e").tolist()
+                fig.add_bar(x=df_days["date_str"], y=df_days["tiredRateNew"], marker_color=colors, name="疲劳指数")
                 fig.add_hline(y=0, line_dash="dash", line_color="rgba(255,255,255,0.3)")
-                fig.update_layout(**PLOTLY_LAYOUT, height=280)
-                st.plotly_chart(fig, use_container_width=True)
+                fig.update_layout(**PLOTLY_LAYOUT, height=chart_h)
+                _render_chart(fig)
 
-        with col_ratio:
-            st.subheader("训练负荷比趋势")
+        def chart_load_ratio():
+            st.markdown("**训练负荷比趋势**")
             if "trainingLoadRatio" in df_days.columns:
                 ratio_data = df_days[df_days["trainingLoadRatio"] > 0]
                 if not ratio_data.empty:
@@ -481,10 +507,22 @@ with tab_analysis:
                     fig.add_scatter(x=ratio_data["date_str"], y=ratio_data["trainingLoadRatio"],
                                     mode="lines+markers", line_color="#a78bfa", name="负荷比")
                     fig.add_hline(y=1.0, line_dash="dash", line_color="rgba(255,255,255,0.3)")
-                    fig.add_hrect(y0=0.8, y1=1.5, fillcolor="rgba(34,197,94,0.1)",
-                                  line_width=0, annotation_text="最佳区间")
-                    fig.update_layout(**PLOTLY_LAYOUT, height=280)
-                    st.plotly_chart(fig, use_container_width=True)
+                    fig.add_hrect(y0=0.8, y1=1.5, fillcolor="rgba(34,197,94,0.1)", line_width=0, annotation_text="最佳区间")
+                    fig.update_layout(**PLOTLY_LAYOUT, height=chart_h)
+                    _render_chart(fig)
+
+        all_charts = [
+            chart_training_load, chart_vo2max, chart_rhr, chart_7d_28d,
+            chart_weekly_vol, chart_intensity, chart_pace_zone, chart_hr_zone,
+            chart_fatigue, chart_load_ratio,
+        ]
+
+        for row_start in range(0, len(all_charts), ncols):
+            row_charts = all_charts[row_start : row_start + ncols]
+            cols = st.columns(ncols)
+            for col, fn in zip(cols, row_charts):
+                with col:
+                    fn()
 
 
 # ═══════════════════════════════════════════════
@@ -543,7 +581,7 @@ with tab_activities:
     if rows:
         st.dataframe(
             pd.DataFrame(rows),
-            use_container_width=True,
+            width="stretch",
             hide_index=True,
             height=min(len(rows) * 38 + 40, 900),
         )
@@ -551,334 +589,365 @@ with tab_activities:
 
 
 # ═══════════════════════════════════════════════
-# TAB 4 – Training Plan
+# TAB 4 – Training Plan (Concurrent Training)
 # ═══════════════════════════════════════════════
 with tab_plan:
     PLANS_DIR.mkdir(parents=True, exist_ok=True)
+    TODO_FILE = DATA_DIR / "plan_todo_state.json"
 
-    # ── Sidebar-like config in expander ──
-    with st.expander("⚙️ 计划配置", expanded=True):
-        pc1, pc2, pc3 = st.columns(3)
-        with pc1:
-            plan_name = st.text_input("计划名称", "RHR 50 → 45 Experiment")
-            plan_type = st.selectbox("计划类型", ["Zone 2 + HIIT", "马拉松备赛", "越野备赛", "自定义"])
-        with pc2:
-            plan_start = st.date_input("开始日期", date(2026, 2, 18))
-            plan_weeks = st.number_input("周数", 4, 24, 8)
-        with pc3:
-            weekly_z2_target = st.number_input("每周 Z2 目标 (分钟)", 60, 600, 200)
-            hiit_per_week = st.number_input("每周 HIIT 次数", 0, 5, 1)
-            deload_every = st.number_input("每几周减量", 3, 6, 4)
+    def load_todo_state() -> dict:
+        if TODO_FILE.exists():
+            with open(TODO_FILE, "r") as f:
+                return json.load(f)
+        return {}
 
-    # ── Generate plan ──
-    def generate_plan() -> list[dict]:
-        weeks = []
-        for w in range(plan_weeks):
-            week_start = plan_start + timedelta(weeks=w)
-            week_end = week_start + timedelta(days=6)
+    def save_todo_state(state: dict):
+        with open(TODO_FILE, "w") as f:
+            json.dump(state, f, ensure_ascii=False, indent=2)
 
-            is_last = w == plan_weeks - 1
-            is_deload = (w + 1) % deload_every == 0 and not is_last
-            is_taper = is_last
+    if "todo_state" not in st.session_state:
+        st.session_state.todo_state = load_todo_state()
 
-            progression = 1.0 + (w / plan_weeks) * 0.4
-            if is_deload:
-                factor = 0.6
-                label = "DELOAD"
-            elif is_taper:
-                factor = 0.5
-                label = "TAPER"
-            else:
-                factor = progression
-                label = ""
+    # Auto-complete days that have actual COROS activity data
+    act_dates_with_data = set()
+    for a in activities_raw:
+        d = a.get("date", 0)
+        if d:
+            act_dates_with_data.add(parse_date(d).isoformat())
 
-            target_min = int(weekly_z2_target * factor * 0.9)
-            target_max = int(weekly_z2_target * factor * 1.1)
-            target_min = max(target_min, 60)
+    def auto_sync_todo(phases):
+        changed = False
+        for phase in phases:
+            for week in phase["weeks"]:
+                for day in week["days"]:
+                    dd = day["date"]
+                    if dd in act_dates_with_data and not st.session_state.todo_state.get(dd, False):
+                        st.session_state.todo_state[dd] = True
+                        changed = True
+        if changed:
+            save_todo_state(st.session_state.todo_state)
 
-            days = []
-            for d_offset in range(7):
-                day_date = week_start + timedelta(days=d_offset)
-                days.append({
-                    "date": day_date.isoformat(),
-                    "day_name": ["周一", "周二", "周三", "周四", "周五", "周六", "周日"][day_date.weekday()],
-                    "sessions": [],
-                    "actual_z2_min": 0,
-                    "actual_hiit_min": 0,
-                })
+    # ── Concrete concurrent training plan ──
+    RACE_A = {"name": "九华山南北穿越", "date": "2026-03-08", "dist": "40km", "elev": "4000m"}
+    RACE_B = {"name": "无锡马拉松", "date": "2026-03-22", "dist": "全马", "goal": "Sub-3"}
 
-            weeks.append({
-                "week_num": w + 1,
-                "start": week_start.isoformat(),
-                "end": week_end.isoformat(),
-                "label": label,
-                "target_min": target_min,
-                "target_max": target_max,
-                "hiit_target": hiit_per_week if not is_taper else 0,
-                "days": days,
-                "actual_z2_total": 0,
-                "actual_hiit_count": 0,
-            })
-        return weeks
+    PLAN_PHASES = [
+        {
+            "name": "九华山赛前减量",
+            "tag": "TAPER-A",
+            "weeks": [
+                {
+                    "label": "减量周",
+                    "dates": ("2026-02-24", "2026-03-02"),
+                    "target_km": "20-25km",
+                    "target_tl": "150-200",
+                    "days": [
+                        {"date": "2026-02-24", "wd": "周一", "am": "", "noon": "力量：硬拉3x3+卧推3x5（减量40%）", "pm": "休息", "tl": 15, "type": "strength"},
+                        {"date": "2026-02-25", "wd": "周二", "am": "", "noon": "", "pm": "轻松跑 6km Z2（HR<145）", "tl": 35, "type": "easy_run"},
+                        {"date": "2026-02-26", "wd": "周三", "am": "", "noon": "力量：深蹲3x3+腹肌（减量40%）", "pm": "休息/拉伸", "tl": 15, "type": "strength"},
+                        {"date": "2026-02-27", "wd": "周四", "am": "", "noon": "", "pm": "坡度跑 8km（含4km爬坡模拟）", "tl": 55, "type": "hill_run"},
+                        {"date": "2026-02-28", "wd": "周五", "am": "", "noon": "力量：轻卧推2x8+手臂", "pm": "休息", "tl": 10, "type": "strength"},
+                        {"date": "2026-03-01", "wd": "周六", "am": "长距离 12km（含坡度，Z2-Z3）", "noon": "", "pm": "", "tl": 80, "type": "long_run"},
+                        {"date": "2026-03-02", "wd": "周日", "am": "", "noon": "", "pm": "完全休息", "tl": 0, "type": "rest"},
+                    ],
+                },
+                {
+                    "label": "赛前最后一周",
+                    "dates": ("2026-03-03", "2026-03-08"),
+                    "target_km": "10-15km",
+                    "target_tl": "80-120",
+                    "days": [
+                        {"date": "2026-03-03", "wd": "周一", "am": "", "noon": "力量：极轻激活（每项1x5）", "pm": "休息", "tl": 5, "type": "strength"},
+                        {"date": "2026-03-04", "wd": "周二", "am": "", "noon": "", "pm": "轻松跑 5km Z1-Z2（HR<140）", "tl": 25, "type": "easy_run"},
+                        {"date": "2026-03-05", "wd": "周三", "am": "", "noon": "拉伸+泡沫轴", "pm": "休息", "tl": 0, "type": "recovery"},
+                        {"date": "2026-03-06", "wd": "周四", "am": "", "noon": "", "pm": "抖腿慢跑 3km（纯激活）", "tl": 10, "type": "easy_run"},
+                        {"date": "2026-03-07", "wd": "周五", "am": "", "noon": "", "pm": "完全休息 + 装备检查", "tl": 0, "type": "rest"},
+                        {"date": "2026-03-08", "wd": "周六", "am": "🏔️ 九华山南北穿越 40km", "noon": "", "pm": "", "tl": 800, "type": "race"},
+                    ],
+                },
+            ],
+        },
+        {
+            "name": "恢复 + 无锡备赛",
+            "tag": "RECOVERY+TAPER-B",
+            "weeks": [
+                {
+                    "label": "恢复周",
+                    "dates": ("2026-03-09", "2026-03-15"),
+                    "target_km": "15-25km",
+                    "target_tl": "100-180",
+                    "days": [
+                        {"date": "2026-03-09", "wd": "周日", "am": "", "noon": "", "pm": "完全休息（赛后第1天）", "tl": 0, "type": "rest"},
+                        {"date": "2026-03-10", "wd": "周一", "am": "", "noon": "", "pm": "步行30min + 拉伸20min", "tl": 5, "type": "recovery"},
+                        {"date": "2026-03-11", "wd": "周二", "am": "", "noon": "", "pm": "极轻松跑30min（测试腿部）", "tl": 20, "type": "easy_run"},
+                        {"date": "2026-03-12", "wd": "周三", "am": "", "noon": "力量：极轻激活（上肢为主）", "pm": "休息", "tl": 10, "type": "strength"},
+                        {"date": "2026-03-13", "wd": "周四", "am": "", "noon": "", "pm": "轻松跑 6km Z2", "tl": 35, "type": "easy_run"},
+                        {"date": "2026-03-14", "wd": "周五", "am": "", "noon": "力量：中等（上肢为主，避免深蹲）", "pm": "休息", "tl": 15, "type": "strength"},
+                        {"date": "2026-03-15", "wd": "周六", "am": "中距离 12km（含4km@马拉松配速试跑）", "noon": "", "pm": "", "tl": 90, "type": "tempo_run"},
+                    ],
+                },
+                {
+                    "label": "无锡赛前减量",
+                    "dates": ("2026-03-16", "2026-03-22"),
+                    "target_km": "15-20km",
+                    "target_tl": "80-150",
+                    "days": [
+                        {"date": "2026-03-16", "wd": "周一", "am": "", "noon": "力量：轻量维持", "pm": "休息", "tl": 10, "type": "strength"},
+                        {"date": "2026-03-17", "wd": "周二", "am": "", "noon": "", "pm": "质量跑 8km：含4x1km@T配速（3'46\"）", "tl": 80, "type": "interval"},
+                        {"date": "2026-03-18", "wd": "周三", "am": "", "noon": "拉伸+泡沫轴", "pm": "休息", "tl": 0, "type": "recovery"},
+                        {"date": "2026-03-19", "wd": "周四", "am": "", "noon": "", "pm": "轻松跑 5km Z2", "tl": 25, "type": "easy_run"},
+                        {"date": "2026-03-20", "wd": "周五", "am": "", "noon": "", "pm": "完全休息", "tl": 0, "type": "rest"},
+                        {"date": "2026-03-21", "wd": "周六", "am": "抖腿慢跑 3km + 赛前准备", "noon": "", "pm": "", "tl": 10, "type": "easy_run"},
+                        {"date": "2026-03-22", "wd": "周日", "am": "🏃 无锡马拉松全马 目标2:55-2:59", "noon": "", "pm": "", "tl": 500, "type": "race"},
+                    ],
+                },
+            ],
+        },
+        {
+            "name": "赛后恢复",
+            "tag": "RECOVERY",
+            "weeks": [
+                {
+                    "label": "恢复周",
+                    "dates": ("2026-03-23", "2026-03-29"),
+                    "target_km": "0-15km",
+                    "target_tl": "50-100",
+                    "days": [
+                        {"date": "2026-03-23", "wd": "周一", "am": "", "noon": "", "pm": "完全休息", "tl": 0, "type": "rest"},
+                        {"date": "2026-03-24", "wd": "周二", "am": "", "noon": "", "pm": "步行30min + 拉伸", "tl": 5, "type": "recovery"},
+                        {"date": "2026-03-25", "wd": "周三", "am": "", "noon": "", "pm": "极轻松跑20min", "tl": 10, "type": "easy_run"},
+                        {"date": "2026-03-26", "wd": "周四", "am": "", "noon": "", "pm": "休息", "tl": 0, "type": "rest"},
+                        {"date": "2026-03-27", "wd": "周五", "am": "", "noon": "力量：极轻激活", "pm": "轻松跑30min", "tl": 25, "type": "easy_run"},
+                        {"date": "2026-03-28", "wd": "周六", "am": "轻松跑 6km Z2", "noon": "", "pm": "", "tl": 35, "type": "easy_run"},
+                        {"date": "2026-03-29", "wd": "周日", "am": "", "noon": "", "pm": "休息/轻松步行", "tl": 0, "type": "rest"},
+                    ],
+                },
+            ],
+        },
+    ]
 
-    # Match actual activities to plan weeks
-    def fill_actual_data(weeks: list[dict]):
-        act_by_date = {}
-        for a in activities_raw:
-            d = a.get("date", 0)
-            if d:
-                ds = parse_date(d).isoformat()
-                act_by_date.setdefault(ds, []).append(a)
+    auto_sync_todo(PLAN_PHASES)
 
-        for week in weeks:
-            z2_total = 0
-            hiit_count = 0
-            for day in week["days"]:
-                day_acts = act_by_date.get(day["date"], [])
-                z2_min = 0
-                hiit_min = 0
-                for a in day_acts:
-                    duration_min = (a.get("totalTime", 0) or 0) / 60
-                    avg_hr = a.get("avgHr", 0) or 0
-                    sport = a.get("sportType", 0)
-                    if sport in (100, 102) and avg_hr > 0:
-                        if avg_hr < lthr * 0.85:
-                            z2_min += duration_min
-                        elif avg_hr > lthr * 0.95:
-                            hiit_min += duration_min
-                            hiit_count += 1
-                        else:
-                            z2_min += duration_min * 0.5
-                    elif sport == 402:
-                        pass
-                    elif sport == 200:
-                        z2_min += duration_min * 0.7
+    TYPE_COLORS = {
+        "race": "#ef4444", "interval": "#f97316", "tempo_run": "#eab308",
+        "hill_run": "#a855f7", "long_run": "#3b82f6", "easy_run": "#22c55e",
+        "strength": "#06b6d4", "recovery": "#64748b", "rest": "#374151",
+    }
+    TYPE_LABELS = {
+        "race": "比赛", "interval": "间歇", "tempo_run": "节奏跑",
+        "hill_run": "坡度跑", "long_run": "长距离", "easy_run": "轻松跑",
+        "strength": "力量", "recovery": "恢复", "rest": "休息",
+    }
 
-                day["actual_z2_min"] = round(z2_min)
-                day["actual_hiit_min"] = round(hiit_min)
-                day["sessions"] = [
-                    {"type": a.get("name", ""), "duration": a.get("totalTime", 0)}
-                    for a in day_acts
-                ]
-                z2_total += z2_min
-
-            week["actual_z2_total"] = round(z2_total)
-            week["actual_hiit_count"] = hiit_count
-
-    plan_data = generate_plan()
-    fill_actual_data(plan_data)
-
-    # ── Summary metrics ──
-    total_z2_actual = sum(w["actual_z2_total"] for w in plan_data)
-    total_z2_target = sum((w["target_min"] + w["target_max"]) // 2 for w in plan_data)
-    weeks_done = sum(1 for w in plan_data if date.fromisoformat(w["end"]) < date.today())
-    hiit_weeks_done = sum(1 for w in plan_data
-                          if date.fromisoformat(w["end"]) < date.today()
-                          and w["actual_hiit_count"] >= w["hiit_target"] > 0)
-    current_week_idx = 0
-    for i, w in enumerate(plan_data):
-        ws = date.fromisoformat(w["start"])
-        we = date.fromisoformat(w["end"])
-        if ws <= date.today() <= we:
-            current_week_idx = i + 1
-            break
-
-    st.markdown(f"### {plan_name}")
-    st.caption(
-        f"{plan_weeks}-week {plan_type} plan · "
-        f"{plan_start.strftime('%b %d')} — {(plan_start + timedelta(weeks=plan_weeks) - timedelta(days=1)).strftime('%b %d, %Y')}"
-    )
-
-    mc1, mc2, mc3, mc4, mc5 = st.columns(5)
-    mc1.metric("TOTAL Z2", f"{total_z2_actual}m")
-    mc2.metric("TARGET", f"{total_z2_target}m")
-    mc3.metric("WEEKS DONE", f"{weeks_done}/{plan_weeks}")
-    mc4.metric("HIIT WEEKS", f"{hiit_weeks_done}/{max(1, weeks_done)}")
-    mc5.metric("WEEK", f"{current_week_idx or 1} of {plan_weeks}")
-
+    # ── Header ──
     st.markdown(
-        '<div style="display:flex;gap:16px;margin:8px 0">'
-        '<span>🟩 Zone 2</span>'
-        '<span>🟥 HIIT</span>'
-        '<span>⬜ Today</span>'
-        '</div>',
+        '<h2 style="margin-bottom:0">混合训练计划：九华山 + 无锡马拉松</h2>',
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        f'<p style="color:#94a3b8;margin-top:4px;font-size:0.95rem">'
+        f'Concurrent Training · 2026-02-24 — 2026-03-29 (5 weeks)<br>'
+        f'A赛 <strong style="color:#ef4444">{RACE_A["date"]}</strong> {RACE_A["name"]} {RACE_A["dist"]}（爬升{RACE_A["elev"]}）&nbsp;&nbsp;|&nbsp;&nbsp;'
+        f'B赛 <strong style="color:#3b82f6">{RACE_B["date"]}</strong> {RACE_B["name"]} 目标{RACE_B["goal"]}</p>',
         unsafe_allow_html=True,
     )
 
-    # ── Weekly calendar ──
-    today_str = date.today().isoformat()
+    # ── Race countdown ──
+    today = date.today()
+    days_to_a = (date.fromisoformat(RACE_A["date"]) - today).days
+    days_to_b = (date.fromisoformat(RACE_B["date"]) - today).days
 
-    for week in plan_data:
-        w_start = date.fromisoformat(week["start"])
-        w_end = date.fromisoformat(week["end"])
-        is_current = w_start <= date.today() <= w_end
-        is_past = w_end < date.today()
+    rc1, rc2, rc3, rc4 = st.columns(4)
+    a_label = "赛后" if days_to_a < 0 else f"{days_to_a} 天后"
+    b_label = "赛后" if days_to_b < 0 else f"{days_to_b} 天后"
+    rc1.metric("🏔️ 九华山", a_label, f"{RACE_A['dist']} · {RACE_A['elev']}")
+    rc2.metric("🏃 无锡马拉松", b_label, f"目标 {RACE_B['goal']}")
 
-        label_suffix = ""
-        if week["label"]:
-            label_suffix = f'  <span style="color:#f97316;font-size:0.8em">{week["label"]}</span>'
+    all_plan_days = [d for p in PLAN_PHASES for w in p["weeks"] for d in w["days"]]
+    total_done = sum(1 for d in all_plan_days if st.session_state.todo_state.get(d["date"], False))
+    rc3.metric("完成进度", f"{total_done} / {len(all_plan_days)}", f"{total_done/max(len(all_plan_days),1)*100:.0f}%")
 
-        border = "border:2px solid #3b82f6;border-radius:8px;" if is_current else ""
-        bg = "background:#1a1f2e;" if not is_current else "background:#1e293b;"
+    past_days = [d for d in all_plan_days if d["date"] <= today.isoformat()]
+    past_done = sum(1 for d in past_days if st.session_state.todo_state.get(d["date"], False))
+    behind = len(past_days) - past_done
+    rc4.metric("应完成", f"{past_done} / {len(past_days)}", "全部完成" if behind == 0 and past_days else f"差 {behind} 天" if past_days else "未开始")
 
-        week_html = f'<div style="{bg}{border}padding:12px;margin-bottom:8px;border-radius:8px">'
-        week_html += f'<div style="display:flex;align-items:center;justify-content:space-between">'
-        week_html += f'<div>'
-        week_html += f'<strong>Week {week["week_num"]}</strong>{label_suffix}<br>'
-        week_html += f'<span style="color:#94a3b8;font-size:0.8em">{w_start.strftime("%b %d")}–{w_end.strftime("%b %d")}</span>'
-        week_html += '</div>'
+    # Legend
+    legend_html = '<div style="display:flex;flex-wrap:wrap;gap:12px;margin:8px 0 16px">'
+    for tp, color in TYPE_COLORS.items():
+        legend_html += f'<span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:{color};display:inline-block"></span>{TYPE_LABELS[tp]}</span>'
+    legend_html += '</div>'
+    st.markdown(legend_html, unsafe_allow_html=True)
 
-        # Day cells
-        week_html += '<div style="display:flex;gap:4px;flex:1;margin:0 16px">'
-        for day in week["days"]:
-            d_date = date.fromisoformat(day["date"])
-            is_today = day["date"] == today_str
-            z2 = day["actual_z2_min"]
-            hiit = day["actual_hiit_min"]
+    # ── Render phases and weeks ──
+    today_str = today.isoformat()
 
-            cell_border = "border:2px solid #fff;" if is_today else "border:1px solid #374151;"
-            if z2 > 0 and hiit > 0:
-                cell_bg = "background:linear-gradient(135deg,#22c55e 50%,#ef4444 50%);"
-                cell_text = f"{z2}m"
-            elif z2 > 0:
-                cell_bg = "background:#22c55e;"
-                cell_text = f"{z2}m"
-            elif hiit > 0:
-                cell_bg = "background:#ef4444;"
-                cell_text = f"{hiit}m"
-            else:
-                cell_bg = "background:#374151;"
-                cell_text = day["day_name"][:1]
+    for phase in PLAN_PHASES:
+        st.markdown(f"#### {phase['tag']}：{phase['name']}")
 
-            week_html += (
-                f'<div style="{cell_bg}{cell_border}border-radius:6px;'
-                f'width:60px;height:40px;display:flex;align-items:center;'
-                f'justify-content:center;font-size:0.75em;color:#fff">'
-                f'{cell_text}</div>'
+        for week in phase["weeks"]:
+            w_start = date.fromisoformat(week["dates"][0])
+            w_end = date.fromisoformat(week["dates"][1])
+            is_current = w_start <= today <= w_end
+
+            border = "border:2px solid #3b82f6;" if is_current else "border:1px solid #2d3748;"
+            st.markdown(
+                f'<div style="background:#1a1f2e;{border}border-radius:10px;padding:14px;margin-bottom:12px">'
+                f'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">'
+                f'<div><strong style="font-size:1.05em">{week["label"]}</strong>'
+                f' <span style="color:#94a3b8;font-size:0.85em">{week["dates"][0]} ~ {week["dates"][1]}</span></div>'
+                f'<div style="color:#94a3b8;font-size:0.85em">目标: {week["target_km"]} · TL {week["target_tl"]}</div>'
+                f'</div></div>',
+                unsafe_allow_html=True,
             )
-        week_html += '</div>'
 
-        # Right side: actual / target
-        actual = week["actual_z2_total"]
-        tgt_min = week["target_min"]
-        tgt_max = week["target_max"]
-        pct = min(actual / ((tgt_min + tgt_max) / 2) * 100, 100) if tgt_min > 0 else 0
-        status = "upcoming" if not is_past and not is_current else ""
+            # Build activity lookup by ISO date
+            act_by_date = {}
+            for a in activities_raw:
+                d = a.get("date", 0)
+                if d:
+                    ds = parse_date(d).isoformat()
+                    act_by_date.setdefault(ds, []).append(a)
 
-        week_html += '<div style="text-align:right;min-width:140px">'
-        week_html += f'<strong>{actual}m</strong> / {tgt_min}–{tgt_max}m<br>'
+            for day in week["days"]:
+                d_date = date.fromisoformat(day["date"])
+                is_today = day["date"] == today_str
+                is_race = day["type"] == "race"
 
-        bar_color = "#22c55e" if pct >= 80 else "#3b82f6" if pct > 0 else "#374151"
-        week_html += (
-            f'<div style="width:100%;background:#374151;border-radius:4px;height:6px;margin-top:4px">'
-            f'<div style="width:{pct:.0f}%;background:{bar_color};height:100%;border-radius:4px"></div>'
-            f'</div>'
+                color = TYPE_COLORS.get(day["type"], "#374151")
+                todo_key = day["date"]
+
+                # Planned sessions
+                sessions = []
+                if day["noon"]:
+                    sessions.append(f"🔩 中午: {day['noon']}")
+                if day["am"]:
+                    sessions.append(f"🌅 上午: {day['am']}")
+                if day["pm"]:
+                    sessions.append(f"🌙 下午/晚: {day['pm']}")
+                session_text = " ｜ ".join(sessions) if sessions else "休息"
+
+                # Actual COROS data for this day
+                day_acts = act_by_date.get(day["date"], [])
+                actual_parts = []
+                actual_tl = 0
+                for a in day_acts:
+                    name = a.get("name", "")
+                    dist = a.get("distance", 0)
+                    dur = a.get("totalTime", 0)
+                    tl = a.get("trainingLoad", 0)
+                    actual_tl += tl
+                    desc = name
+                    if dist > 0:
+                        desc += f" {fmt_distance(dist)}"
+                    if dur > 0:
+                        desc += f" {fmt_duration(dur)}"
+                    if tl > 0:
+                        desc += f" TL{tl}"
+                    actual_parts.append(desc)
+                actual_text = " + ".join(actual_parts) if actual_parts else ""
+
+                col_check, col_info = st.columns([0.05, 0.95])
+                with col_check:
+                    checked = st.checkbox(
+                        "done",
+                        value=st.session_state.todo_state.get(todo_key, False),
+                        key=f"todo_{todo_key}",
+                        label_visibility="collapsed",
+                    )
+                    if checked != st.session_state.todo_state.get(todo_key, False):
+                        st.session_state.todo_state[todo_key] = checked
+                        save_todo_state(st.session_state.todo_state)
+
+                with col_info:
+                    today_marker = ' style="border-left:3px solid #fff;padding-left:8px"' if is_today else ""
+                    done_class = "todo-done" if checked else ""
+                    race_badge = f' <span style="background:{color};color:#fff;padding:2px 8px;border-radius:4px;font-weight:bold;font-size:0.8em">{TYPE_LABELS[day["type"]]}</span>' if is_race else f' <span style="color:{color};font-size:0.8em">● {TYPE_LABELS[day["type"]]}</span>'
+                    tl_badge = f' <span style="color:#94a3b8;font-size:0.8em">TL≈{day["tl"]}</span>' if day["tl"] > 0 else ""
+
+                    actual_line = ""
+                    if actual_text:
+                        actual_line = f'<br><span style="color:#22c55e;font-size:0.85em">✅ 实际: {actual_text}</span>'
+
+                    st.markdown(
+                        f'<div{today_marker}>'
+                        f'<span class="{done_class}">'
+                        f'<strong>{day["wd"]} {day["date"][5:]}</strong>{race_badge}{tl_badge}'
+                        f'<br><span style="color:#d1d5db;font-size:0.9em">{session_text}</span>'
+                        f'{actual_line}'
+                        f'</span></div>',
+                        unsafe_allow_html=True,
+                    )
+
+    # ── Export ──
+    st.divider()
+    st.subheader("导出训练计划")
+
+    def build_plan_markdown() -> str:
+        lines = [
+            "# 混合训练计划：九华山 + 无锡马拉松",
+            f"",
+            f"A赛：{RACE_A['date']} {RACE_A['name']} {RACE_A['dist']}（爬升{RACE_A['elev']}）",
+            f"B赛：{RACE_B['date']} {RACE_B['name']} 目标{RACE_B['goal']}",
+            f"",
+            "---",
+            "",
+        ]
+        for phase in PLAN_PHASES:
+            lines.append(f"## {phase['tag']}：{phase['name']}")
+            lines.append("")
+            for week in phase["weeks"]:
+                lines.append(f"### {week['label']}（{week['dates'][0]} ~ {week['dates'][1]}）")
+                lines.append(f"目标跑量: {week['target_km']} · 目标负荷: TL {week['target_tl']}")
+                lines.append("")
+                lines.append("| 日期 | 星期 | 中午训练 | 跑步训练 | 预估TL |")
+                lines.append("|------|------|----------|----------|--------|")
+                for d in week["days"]:
+                    noon = d["noon"] or "—"
+                    run = d["am"] or d["pm"] or "休息"
+                    lines.append(f"| {d['date']} | {d['wd']} | {noon} | {run} | {d['tl']} |")
+                lines.append("")
+        lines.append("---")
+        lines.append("")
+        lines.append("## COROS 手动录入指南")
+        lines.append("")
+        lines.append("1. 打开 t.coros.com → 日程 tab")
+        lines.append("2. 点击对应日期 → 添加训练计划")
+        lines.append("3. 按上表内容设置训练类型、时长、心率区间")
+        lines.append("4. 对于跑步训练：设置目标心率或配速")
+        lines.append("5. 对于力量训练：设置时长和训练类型")
+        return "\n".join(lines)
+
+    plan_md = build_plan_markdown()
+
+    ec1, ec2 = st.columns(2)
+    with ec1:
+        st.download_button(
+            "📥 下载训练计划（Markdown）",
+            plan_md,
+            file_name="concurrent_training_plan_2026.md",
+            mime="text/markdown",
+        )
+    with ec2:
+        plan_json_export = json.dumps(
+            {"races": [RACE_A, RACE_B], "phases": PLAN_PHASES},
+            ensure_ascii=False, indent=2, default=str,
+        )
+        st.download_button(
+            "📥 下载训练计划（JSON）",
+            plan_json_export,
+            file_name="concurrent_training_plan_2026.json",
+            mime="application/json",
         )
 
-        if not is_past and not is_current:
-            week_html += '<span style="color:#94a3b8;font-size:0.75em">upcoming</span>'
-        elif is_current:
-            z2_left = max(0, tgt_min - actual)
-            hint = f"{z2_left}m Z2 left" if z2_left > 0 else "target reached!"
-            if week["actual_hiit_count"] < week["hiit_target"]:
-                hint += " · need HIIT"
-            week_html += f'<span style="color:#3b82f6;font-size:0.75em">{hint}</span>'
+    with st.expander("💡 如何导入到 COROS"):
+        st.markdown("""
+**COROS 目前不支持通过文件直接导入训练计划**，但你可以通过以下方式使用：
 
-        week_html += '</div></div></div>'
-        st.markdown(week_html, unsafe_allow_html=True)
+1. **COROS Team 日程**：打开 [t.coros.com](https://t.coros.com) → 日程 tab → 逐日添加计划训练
+2. **COROS App**：手机 App → 训练计划 → 手动创建每日训练
+3. **参考上方 Markdown 文件**：下载后打印或放在手机备忘录中，每天对照执行并在上方打勾
 
-    # ── Save / Export ──
-    st.divider()
-    col_save, col_export = st.columns(2)
-
-    with col_save:
-        if st.button("💾 保存计划"):
-            plan_file = PLANS_DIR / f"{plan_name.replace(' ', '_')}_{plan_start.isoformat()}.json"
-            plan_export = {
-                "name": plan_name,
-                "type": plan_type,
-                "start": plan_start.isoformat(),
-                "weeks": plan_weeks,
-                "z2_target_per_week": weekly_z2_target,
-                "hiit_per_week": hiit_per_week,
-                "deload_every": deload_every,
-                "plan_data": plan_data,
-            }
-            with open(plan_file, "w", encoding="utf-8") as f:
-                json.dump(plan_export, f, ensure_ascii=False, indent=2, default=str)
-            st.success(f"已保存: {plan_file.name}")
-
-    with col_export:
-        if st.button("📤 导出 COROS 训练计划"):
-            coros_plan = {
-                "planName": plan_name,
-                "startDate": plan_start.isoformat(),
-                "endDate": (plan_start + timedelta(weeks=plan_weeks) - timedelta(days=1)).isoformat(),
-                "totalWeeks": plan_weeks,
-                "weeks": [],
-            }
-            for week in plan_data:
-                w_entry = {
-                    "weekNum": week["week_num"],
-                    "label": week["label"],
-                    "targetMinutes": f"{week['target_min']}-{week['target_max']}",
-                    "sessions": [],
-                }
-                day_idx = 0
-                for day in week["days"]:
-                    d_date = date.fromisoformat(day["date"])
-                    weekday = d_date.weekday()
-
-                    if plan_type == "Zone 2 + HIIT":
-                        if weekday in (1, 3):  # Tue, Thu
-                            z2_min = weekly_z2_target // 3
-                            factor = 1.0 + (week["week_num"] - 1) / plan_weeks * 0.4
-                            if week["label"] == "DELOAD":
-                                factor = 0.6
-                            elif week["label"] == "TAPER":
-                                factor = 0.5
-                            z2_min = int(z2_min * factor)
-                            w_entry["sessions"].append({
-                                "date": day["date"],
-                                "dayName": day["day_name"],
-                                "type": "Zone 2 有氧跑",
-                                "targetMinutes": z2_min,
-                                "targetHR": f"{int(lthr*0.65)}-{int(lthr*0.78)} bpm" if lthr else "Z2心率区间",
-                                "description": f"轻松有氧跑 {z2_min}分钟，保持Zone 2心率",
-                            })
-                        elif weekday == 5:  # Sat
-                            z2_min = int(weekly_z2_target * 0.4)
-                            factor = 1.0 + (week["week_num"] - 1) / plan_weeks * 0.4
-                            if week["label"] == "DELOAD":
-                                factor = 0.6
-                            elif week["label"] == "TAPER":
-                                factor = 0.5
-                            z2_min = int(z2_min * factor)
-                            w_entry["sessions"].append({
-                                "date": day["date"],
-                                "dayName": day["day_name"],
-                                "type": "Zone 2 长距离",
-                                "targetMinutes": z2_min,
-                                "targetHR": f"{int(lthr*0.65)}-{int(lthr*0.78)} bpm" if lthr else "Z2心率区间",
-                                "description": f"长距离有氧 {z2_min}分钟",
-                            })
-                        elif weekday == 2 and week.get("hiit_target", 0) > 0:  # Wed
-                            w_entry["sessions"].append({
-                                "date": day["date"],
-                                "dayName": day["day_name"],
-                                "type": "HIIT 间歇训练",
-                                "targetMinutes": 30,
-                                "targetHR": f">{int(lthr*0.9)} bpm" if lthr else "Z4-Z5心率",
-                                "description": "热身10min + 5x4min快/2min慢 + 冷身5min",
-                            })
-                    day_idx += 1
-                coros_plan["weeks"].append(w_entry)
-
-            plan_json = json.dumps(coros_plan, ensure_ascii=False, indent=2, default=str)
-            st.download_button(
-                "⬇️ 下载 COROS 训练计划 JSON",
-                plan_json,
-                file_name=f"coros_plan_{plan_start.isoformat()}.json",
-                mime="application/json",
-            )
-            st.json(coros_plan)
+> COROS 支持导入 `.fit` / `.tcx` 格式的**已完成活动**（通过日程页面的"导入"按钮），
+> 但训练计划需要手动在平台上创建。
+        """)
