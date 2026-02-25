@@ -1,7 +1,14 @@
-启动仪表板（自动同步数据）:
+本地启动（自动同步数据）:
   python3 -m streamlit run streamlit_app.py
 
 手动更新数据:
   python3 fetch_coros_data.py
 
-访问地址: http://localhost:8501
+本地访问: http://localhost:8501
+
+一键部署到 Streamlit Cloud:
+  1. 推送代码到 GitHub
+  2. 打开 https://share.streamlit.io → New app
+  3. 选择仓库 nametoa/ai-sport-training, 主文件 streamlit_app.py
+  4. Advanced settings → Secrets 中粘贴 COROS 凭据
+  5. Deploy

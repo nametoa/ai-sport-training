@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 from datetime import datetime, timedelta, date
 from pathlib import Path
 
@@ -178,11 +179,24 @@ st.markdown("""<style>
 # ──────────────────────────────────────────────
 if "data_synced" not in st.session_state:
     import subprocess, logging
+
+    env = os.environ.copy()
+    try:
+        coros_secrets = st.secrets.get("coros", {})
+        if coros_secrets:
+            env["COROS_ACCESS_TOKEN"] = str(coros_secrets.get("access_token", ""))
+            env["COROS_USER_ID"] = str(coros_secrets.get("user_id", ""))
+            env["COROS_COOKIE_WBKFRO"] = str(coros_secrets.get("cookie_wbkfro", ""))
+            env["COROS_COOKIE_REGION"] = str(coros_secrets.get("cookie_region", "2"))
+            env["COROS_BASE_URL"] = str(coros_secrets.get("base_url", "https://teamcnapi.coros.com"))
+    except Exception:
+        pass
+
     with st.spinner("正在同步 COROS 数据..."):
         try:
             result = subprocess.run(
                 ["python3", str(Path(__file__).parent / "fetch_coros_data.py")],
-                capture_output=True, text=True, timeout=120,
+                capture_output=True, text=True, timeout=120, env=env,
             )
             if result.returncode == 0:
                 new_lines = [l for l in result.stderr.splitlines() if "new" in l.lower() or "added" in l.lower() or "refreshed" in l.lower()]
@@ -190,8 +204,8 @@ if "data_synced" not in st.session_state:
                 st.toast(f"数据同步完成: {summary}", icon="✅")
             else:
                 st.toast("数据同步失败，使用本地缓存", icon="⚠️")
-        except Exception as e:
-            st.toast(f"同步超时，使用本地缓存", icon="⚠️")
+        except Exception:
+            st.toast("同步超时，使用本地缓存", icon="⚠️")
     st.session_state.data_synced = True
 
 # ──────────────────────────────────────────────
@@ -202,7 +216,15 @@ analyse_raw = load_json("analyse.json") or {}
 dashboard_raw = load_json("dashboard.json") or {}
 
 if not activities_raw:
-    st.error("未找到数据文件，请先运行 `python fetch_coros_data.py`")
+    st.warning("暂无数据。如首次部署请在 Streamlit Cloud Secrets 中配置 COROS 凭据后刷新页面。")
+    st.code("""
+# .streamlit/secrets.toml (或 Streamlit Cloud → Settings → Secrets)
+[coros]
+access_token = "YOUR_COROS_ACCESS_TOKEN"
+user_id = "YOUR_COROS_USER_ID"
+cookie_wbkfro = "YOUR_COOKIE_VALUE"
+cookie_region = "2"
+    """.strip(), language="toml")
     st.stop()
 
 day_list = analyse_raw.get("dayList", [])

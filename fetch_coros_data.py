@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import time
 from datetime import datetime
 from pathlib import Path
@@ -12,17 +13,19 @@ from pathlib import Path
 import requests
 
 # ──────────────────────────────────────────────
-# Configuration – update token/cookies when they expire
+# Configuration – reads from env vars (set by Streamlit secrets on Cloud)
+# Falls back to hardcoded defaults for local development
 # ──────────────────────────────────────────────
+_token = os.environ.get("COROS_ACCESS_TOKEN", "")
 CONFIG = {
-    "access_token": "9PT4TT3M3CDMTH0I1W04E7BMUDNHO0B1",
+    "access_token": _token,
     "cookies": {
-        "_c_WBKFRo": "5A5OdQZmvnDoY6zsyhiVoePez3z2I7nww3iKXSfL",
-        "CPL-coros-token": "9PT4TT3M3CDMTH0I1W04E7BMUDNHO0B1",
-        "CPL-coros-region": "2",
+        "_c_WBKFRo": os.environ.get("COROS_COOKIE_WBKFRO", ""),
+        "CPL-coros-token": _token,
+        "CPL-coros-region": os.environ.get("COROS_COOKIE_REGION", "2"),
     },
-    "user_id": "429371112820850688",
-    "base_url": "https://teamcnapi.coros.com",
+    "user_id": os.environ.get("COROS_USER_ID", ""),
+    "base_url": os.environ.get("COROS_BASE_URL", "https://teamcnapi.coros.com"),
     "page_size": 20,
 }
 
@@ -221,6 +224,10 @@ def main():
     log.info("=" * 50)
     log.info("COROS Data Sync – starting")
     log.info("=" * 50)
+
+    if not CONFIG["access_token"]:
+        log.error("COROS_ACCESS_TOKEN not set. Configure secrets first.")
+        raise SystemExit(1)
 
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     meta = _load_meta()
