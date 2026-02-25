@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import math
 import os
+import sys
 from datetime import datetime, timedelta, date
 from pathlib import Path
 
@@ -178,7 +179,7 @@ st.markdown("""<style>
 # Auto-sync on startup (once per session)
 # ──────────────────────────────────────────────
 if "data_synced" not in st.session_state:
-    import subprocess, logging
+    import subprocess
 
     env = os.environ.copy()
     try:
@@ -195,7 +196,7 @@ if "data_synced" not in st.session_state:
     with st.spinner("正在同步 COROS 数据..."):
         try:
             result = subprocess.run(
-                ["python3", str(Path(__file__).parent / "fetch_coros_data.py")],
+                [sys.executable, str(Path(__file__).parent / "fetch_coros_data.py")],
                 capture_output=True, text=True, timeout=120, env=env,
             )
             if result.returncode == 0:
@@ -203,9 +204,10 @@ if "data_synced" not in st.session_state:
                 summary = " · ".join(new_lines[-3:]) if new_lines else "数据已是最新"
                 st.toast(f"数据同步完成: {summary}", icon="✅")
             else:
-                st.toast("数据同步失败，使用本地缓存", icon="⚠️")
-        except Exception:
-            st.toast("同步超时，使用本地缓存", icon="⚠️")
+                err_msg = (result.stderr or result.stdout or "未知错误")[-300:]
+                st.error(f"数据同步失败:\n```\n{err_msg}\n```")
+        except Exception as e:
+            st.error(f"同步异常: {e}")
     st.session_state.data_synced = True
 
 # ──────────────────────────────────────────────
