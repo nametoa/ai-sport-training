@@ -187,12 +187,22 @@ st.markdown("""<style>
             flex-wrap: wrap !important;
             gap: 0.4rem !important;
         }
-        /* Force every column to 48% → 2 per row */
+        /* Force columns to 48% → 2 per row */
         [data-testid="stHorizontalBlock"] > div[data-testid="stColumn"] {
             width: 48% !important;
             flex: 0 0 48% !important;
             min-width: 48% !important;
             max-width: 48% !important;
+        }
+        /* Exception: exactly 2-column rows keep natural widths (checkbox+info, etc.) */
+        [data-testid="stHorizontalBlock"]:has(> div[data-testid="stColumn"]:nth-child(2):last-child) {
+            flex-wrap: nowrap !important;
+        }
+        [data-testid="stHorizontalBlock"]:has(> div[data-testid="stColumn"]:nth-child(2):last-child) > div[data-testid="stColumn"] {
+            width: auto !important;
+            flex: unset !important;
+            min-width: 0 !important;
+            max-width: none !important;
         }
         /* Smaller metrics */
         div[data-testid='stMetric'] {
@@ -944,35 +954,37 @@ with tab_plan:
                     actual_parts.append(desc)
                 actual_text = " + ".join(actual_parts) if actual_parts else ""
 
-                checked = st.checkbox(
-                    f"{day['wd']} {day['date'][5:]}",
-                    value=st.session_state.todo_state.get(todo_key, False),
-                    key=f"todo_{todo_key}",
-                    label_visibility="collapsed",
-                )
-                if checked != st.session_state.todo_state.get(todo_key, False):
-                    st.session_state.todo_state[todo_key] = checked
-                    save_todo_state(st.session_state.todo_state)
+                col_check, col_info = st.columns([0.06, 0.94])
+                with col_check:
+                    checked = st.checkbox(
+                        "done",
+                        value=st.session_state.todo_state.get(todo_key, False),
+                        key=f"todo_{todo_key}",
+                        label_visibility="collapsed",
+                    )
+                    if checked != st.session_state.todo_state.get(todo_key, False):
+                        st.session_state.todo_state[todo_key] = checked
+                        save_todo_state(st.session_state.todo_state)
 
-                today_marker = 'border-left:3px solid #fff;padding-left:8px;' if is_today else ""
-                done_class = "todo-done" if checked else ""
-                check_icon = "☑️" if checked else "☐"
-                race_badge = f' <span style="background:{color};color:#fff;padding:2px 8px;border-radius:4px;font-weight:bold;font-size:0.8em">{TYPE_LABELS[day["type"]]}</span>' if is_race else f' <span style="color:{color};font-size:0.8em">● {TYPE_LABELS[day["type"]]}</span>'
-                tl_badge = f' <span style="color:#94a3b8;font-size:0.8em">TL≈{day["tl"]}</span>' if day["tl"] > 0 else ""
+                with col_info:
+                    today_marker = ' style="border-left:3px solid #fff;padding-left:8px"' if is_today else ""
+                    done_class = "todo-done" if checked else ""
+                    race_badge = f' <span style="background:{color};color:#fff;padding:2px 8px;border-radius:4px;font-weight:bold;font-size:0.8em">{TYPE_LABELS[day["type"]]}</span>' if is_race else f' <span style="color:{color};font-size:0.8em">● {TYPE_LABELS[day["type"]]}</span>'
+                    tl_badge = f' <span style="color:#94a3b8;font-size:0.8em">TL≈{day["tl"]}</span>' if day["tl"] > 0 else ""
 
-                actual_line = ""
-                if actual_text:
-                    actual_line = f'<br><span style="color:#22c55e;font-size:0.85em">✅ 实际: {actual_text}</span>'
+                    actual_line = ""
+                    if actual_text:
+                        actual_line = f'<br><span style="color:#22c55e;font-size:0.85em">✅ 实际: {actual_text}</span>'
 
-                st.markdown(
-                    f'<div style="{today_marker}margin-bottom:6px">'
-                    f'<span class="{done_class}">'
-                    f'<strong>{day["wd"]} {day["date"][5:]}</strong>{race_badge}{tl_badge}'
-                    f'<br><span style="color:#d1d5db;font-size:0.9em">{session_text}</span>'
-                    f'{actual_line}'
-                    f'</span></div>',
-                    unsafe_allow_html=True,
-                )
+                    st.markdown(
+                        f'<div{today_marker}>'
+                        f'<span class="{done_class}">'
+                        f'<strong>{day["wd"]} {day["date"][5:]}</strong>{race_badge}{tl_badge}'
+                        f'<br><span style="color:#d1d5db;font-size:0.9em">{session_text}</span>'
+                        f'{actual_line}'
+                        f'</span></div>',
+                        unsafe_allow_html=True,
+                    )
 
     # ── Export ──
     st.divider()
