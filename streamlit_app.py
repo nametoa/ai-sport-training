@@ -182,42 +182,33 @@ st.markdown("""<style>
             padding-left: 0.5rem !important;
             padding-right: 0.5rem !important;
         }
-        /* Force all column containers to wrap */
+        /* Force all column containers to wrap, 2 per row */
         [data-testid="stHorizontalBlock"] {
             flex-wrap: wrap !important;
-            gap: 0.4rem !important;
+            gap: 0.3rem !important;
         }
-        /* Force columns to 48% → 2 per row */
-        [data-testid="stHorizontalBlock"] > div[data-testid="stColumn"] {
+        [data-testid="stHorizontalBlock"] > * {
             width: 48% !important;
             flex: 0 0 48% !important;
             min-width: 48% !important;
             max-width: 48% !important;
         }
-        /* Exception: exactly 2-column rows keep natural widths (checkbox+info, etc.) */
-        [data-testid="stHorizontalBlock"]:has(> div[data-testid="stColumn"]:nth-child(2):last-child) {
+        /* Exception: 2-child rows stay inline with natural widths */
+        [data-testid="stHorizontalBlock"]:has(> :nth-child(2):last-child) {
             flex-wrap: nowrap !important;
         }
-        [data-testid="stHorizontalBlock"]:has(> div[data-testid="stColumn"]:nth-child(2):last-child) > div[data-testid="stColumn"] {
+        [data-testid="stHorizontalBlock"]:has(> :nth-child(2):last-child) > * {
             width: auto !important;
             flex: unset !important;
             min-width: 0 !important;
             max-width: none !important;
         }
         /* Smaller metrics */
-        div[data-testid='stMetric'] {
-            padding: 10px 12px;
-        }
-        div[data-testid='stMetricValue'] > div {
-            font-size: 1.3rem !important;
-        }
-        div[data-testid='stMetricLabel'] > div > div > p {
-            font-size: 0.85rem !important;
-        }
-        div[data-testid='stMetricDelta'] > div {
-            font-size: 0.75rem !important;
-        }
-        /* Tabs: scroll horizontally, smaller text */
+        div[data-testid='stMetric'] { padding: 10px 12px; }
+        div[data-testid='stMetricValue'] > div { font-size: 1.3rem !important; }
+        div[data-testid='stMetricLabel'] > div > div > p { font-size: 0.85rem !important; }
+        div[data-testid='stMetricDelta'] > div { font-size: 0.75rem !important; }
+        /* Tabs: scroll horizontally */
         .stTabs [data-baseweb="tab-list"] {
             overflow-x: auto !important;
             -webkit-overflow-scrolling: touch;
@@ -230,26 +221,23 @@ st.markdown("""<style>
             padding: 8px 14px !important;
             white-space: nowrap !important;
         }
-        /* Tables: horizontal scroll */
-        [data-testid="stDataFrame"] {
-            overflow-x: auto !important;
-        }
-        /* Charts: limit overflow */
-        .js-plotly-plot, .plotly {
-            max-width: 100% !important;
-            overflow-x: hidden !important;
-        }
+        /* Tables & charts */
+        [data-testid="stDataFrame"] { overflow-x: auto !important; }
+        .js-plotly-plot, .plotly { max-width: 100% !important; overflow-x: hidden !important; }
     }
 
     /* Tablets */
     @media (min-width: 769px) and (max-width: 1024px) {
-        [data-testid="stHorizontalBlock"] {
-            flex-wrap: wrap !important;
-        }
-        [data-testid="stHorizontalBlock"] > div[data-testid="stColumn"] {
+        [data-testid="stHorizontalBlock"] { flex-wrap: wrap !important; }
+        [data-testid="stHorizontalBlock"] > * {
             width: 48% !important;
             flex: 0 0 48% !important;
             min-width: 48% !important;
+        }
+        [data-testid="stHorizontalBlock"]:has(> :nth-child(2):last-child) { flex-wrap: nowrap !important; }
+        [data-testid="stHorizontalBlock"]:has(> :nth-child(2):last-child) > * {
+            width: auto !important; flex: unset !important;
+            min-width: 0 !important; max-width: none !important;
         }
     }
 </style>""", unsafe_allow_html=True)
