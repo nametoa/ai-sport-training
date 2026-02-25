@@ -182,18 +182,18 @@ st.markdown("""<style>
             padding-left: 0.5rem !important;
             padding-right: 0.5rem !important;
         }
-        /* Allow wrapping */
+        /* Force all column containers to wrap */
         [data-testid="stHorizontalBlock"] {
             flex-wrap: wrap !important;
+            gap: 0.4rem !important;
         }
-        /* 3+ columns → 2 per row (metrics, chart grids, etc.) */
-        [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child:nth-last-child(n+3),
-        [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child:nth-last-child(n+3) ~ [data-testid="stColumn"] {
-            width: 50% !important;
-            flex: 0 0 50% !important;
-            min-width: 0 !important;
+        /* Force every column to 48% → 2 per row */
+        [data-testid="stHorizontalBlock"] > div[data-testid="stColumn"] {
+            width: 48% !important;
+            flex: 0 0 48% !important;
+            min-width: 48% !important;
+            max-width: 48% !important;
         }
-        /* 2-column layouts (checkbox+info, filters) keep original flex ratios */
         /* Smaller metrics */
         div[data-testid='stMetric'] {
             padding: 10px 12px;
@@ -236,11 +236,10 @@ st.markdown("""<style>
         [data-testid="stHorizontalBlock"] {
             flex-wrap: wrap !important;
         }
-        [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child:nth-last-child(n+3),
-        [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child:nth-last-child(n+3) ~ [data-testid="stColumn"] {
-            width: 50% !important;
-            flex: 0 0 50% !important;
-            min-width: 0 !important;
+        [data-testid="stHorizontalBlock"] > div[data-testid="stColumn"] {
+            width: 48% !important;
+            flex: 0 0 48% !important;
+            min-width: 48% !important;
         }
     }
 </style>""", unsafe_allow_html=True)
@@ -945,37 +944,35 @@ with tab_plan:
                     actual_parts.append(desc)
                 actual_text = " + ".join(actual_parts) if actual_parts else ""
 
-                col_check, col_info = st.columns([0.08, 0.92])
-                with col_check:
-                    checked = st.checkbox(
-                        "done",
-                        value=st.session_state.todo_state.get(todo_key, False),
-                        key=f"todo_{todo_key}",
-                        label_visibility="collapsed",
-                    )
-                    if checked != st.session_state.todo_state.get(todo_key, False):
-                        st.session_state.todo_state[todo_key] = checked
-                        save_todo_state(st.session_state.todo_state)
+                checked = st.checkbox(
+                    f"{day['wd']} {day['date'][5:]}",
+                    value=st.session_state.todo_state.get(todo_key, False),
+                    key=f"todo_{todo_key}",
+                    label_visibility="collapsed",
+                )
+                if checked != st.session_state.todo_state.get(todo_key, False):
+                    st.session_state.todo_state[todo_key] = checked
+                    save_todo_state(st.session_state.todo_state)
 
-                with col_info:
-                    today_marker = ' style="border-left:3px solid #fff;padding-left:8px"' if is_today else ""
-                    done_class = "todo-done" if checked else ""
-                    race_badge = f' <span style="background:{color};color:#fff;padding:2px 8px;border-radius:4px;font-weight:bold;font-size:0.8em">{TYPE_LABELS[day["type"]]}</span>' if is_race else f' <span style="color:{color};font-size:0.8em">● {TYPE_LABELS[day["type"]]}</span>'
-                    tl_badge = f' <span style="color:#94a3b8;font-size:0.8em">TL≈{day["tl"]}</span>' if day["tl"] > 0 else ""
+                today_marker = 'border-left:3px solid #fff;padding-left:8px;' if is_today else ""
+                done_class = "todo-done" if checked else ""
+                check_icon = "☑️" if checked else "☐"
+                race_badge = f' <span style="background:{color};color:#fff;padding:2px 8px;border-radius:4px;font-weight:bold;font-size:0.8em">{TYPE_LABELS[day["type"]]}</span>' if is_race else f' <span style="color:{color};font-size:0.8em">● {TYPE_LABELS[day["type"]]}</span>'
+                tl_badge = f' <span style="color:#94a3b8;font-size:0.8em">TL≈{day["tl"]}</span>' if day["tl"] > 0 else ""
 
-                    actual_line = ""
-                    if actual_text:
-                        actual_line = f'<br><span style="color:#22c55e;font-size:0.85em">✅ 实际: {actual_text}</span>'
+                actual_line = ""
+                if actual_text:
+                    actual_line = f'<br><span style="color:#22c55e;font-size:0.85em">✅ 实际: {actual_text}</span>'
 
-                    st.markdown(
-                        f'<div{today_marker}>'
-                        f'<span class="{done_class}">'
-                        f'<strong>{day["wd"]} {day["date"][5:]}</strong>{race_badge}{tl_badge}'
-                        f'<br><span style="color:#d1d5db;font-size:0.9em">{session_text}</span>'
-                        f'{actual_line}'
-                        f'</span></div>',
-                        unsafe_allow_html=True,
-                    )
+                st.markdown(
+                    f'<div style="{today_marker}margin-bottom:6px">'
+                    f'<span class="{done_class}">'
+                    f'<strong>{day["wd"]} {day["date"][5:]}</strong>{race_badge}{tl_badge}'
+                    f'<br><span style="color:#d1d5db;font-size:0.9em">{session_text}</span>'
+                    f'{actual_line}'
+                    f'</span></div>',
+                    unsafe_allow_html=True,
+                )
 
     # ── Export ──
     st.divider()
