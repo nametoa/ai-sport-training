@@ -20,8 +20,9 @@ Thumbs.db
 # Streamlit secrets (NEVER commit real tokens)
 .streamlit/secrets.toml
 
-# Runtime data (fetched from COROS API at startup)
-data/
+# Local-only state (not needed on Cloud)
+data/plan_todo_state.json
+data/fetch_meta.json
 
 # Generated training plan exports
 training_plans/
