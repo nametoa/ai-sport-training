@@ -26,7 +26,7 @@ CONFIG = {
     },
     "user_id": os.environ.get("COROS_USER_ID", ""),
     "base_url": os.environ.get("COROS_BASE_URL", "https://teamcnapi.coros.com"),
-    "page_size": 20,
+    "page_size": 200,
 }
 
 DATA_DIR = Path(__file__).parent / "data"
