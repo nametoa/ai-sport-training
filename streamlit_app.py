@@ -127,6 +127,7 @@ def fatigue_state_text(state: int) -> tuple[str, str]:
 # Page config
 # ──────────────────────────────────────────────
 st.set_page_config(page_title="COROS 训练仪表板", page_icon="🏃", layout="wide")
+st.markdown('<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">', unsafe_allow_html=True)
 st.markdown("""<style>
     .block-container { padding-top: 2.5rem; padding-bottom: 0; }
     header[data-testid="stHeader"] { background: #0e1117; }
@@ -173,6 +174,71 @@ st.markdown("""<style>
     }
 
     .todo-done { text-decoration: line-through; color: #6b7280; }
+
+    /* ── Mobile responsive ── */
+    @media (max-width: 768px) {
+        .block-container {
+            padding-top: 1.5rem;
+            padding-left: 0.5rem !important;
+            padding-right: 0.5rem !important;
+        }
+        /* Stack all columns vertically on mobile */
+        [data-testid="stHorizontalBlock"] {
+            flex-wrap: wrap !important;
+        }
+        [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] {
+            width: 100% !important;
+            flex: 0 0 100% !important;
+            min-width: 100% !important;
+        }
+        /* Smaller metrics */
+        div[data-testid='stMetric'] {
+            padding: 10px 12px;
+        }
+        div[data-testid='stMetricValue'] > div {
+            font-size: 1.3rem !important;
+        }
+        div[data-testid='stMetricLabel'] > div > div > p {
+            font-size: 0.85rem !important;
+        }
+        div[data-testid='stMetricDelta'] > div {
+            font-size: 0.75rem !important;
+        }
+        /* Tabs: scroll horizontally, smaller text */
+        .stTabs [data-baseweb="tab-list"] {
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch;
+            flex-wrap: nowrap !important;
+            padding: 2px;
+        }
+        .stTabs [data-baseweb="tab-list"] button,
+        .stTabs [data-baseweb="tab-list"] [data-baseweb="tab"] {
+            font-size: 0.85rem !important;
+            padding: 8px 14px !important;
+            white-space: nowrap !important;
+        }
+        /* Tables: horizontal scroll */
+        [data-testid="stDataFrame"] {
+            overflow-x: auto !important;
+        }
+        /* Charts: limit overflow */
+        .js-plotly-plot, .plotly {
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+        }
+    }
+
+    /* Slightly wider phones / small tablets */
+    @media (min-width: 769px) and (max-width: 1024px) {
+        [data-testid="stHorizontalBlock"] {
+            flex-wrap: wrap !important;
+        }
+        [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] {
+            width: 50% !important;
+            flex: 0 0 50% !important;
+            min-width: 50% !important;
+        }
+    }
 </style>""", unsafe_allow_html=True)
 
 # ──────────────────────────────────────────────
@@ -875,7 +941,7 @@ with tab_plan:
                     actual_parts.append(desc)
                 actual_text = " + ".join(actual_parts) if actual_parts else ""
 
-                col_check, col_info = st.columns([0.05, 0.95])
+                col_check, col_info = st.columns([0.08, 0.92])
                 with col_check:
                     checked = st.checkbox(
                         "done",
