@@ -182,7 +182,7 @@ st.markdown("""<style>
             padding-left: 0.5rem !important;
             padding-right: 0.5rem !important;
         }
-        /* Force all column containers to wrap, 2 per row */
+        /* Default: wrap columns, 2 per row for text/metrics */
         [data-testid="stHorizontalBlock"] {
             flex-wrap: wrap !important;
             gap: 0.3rem !important;
@@ -193,7 +193,16 @@ st.markdown("""<style>
             min-width: 48% !important;
             max-width: 48% !important;
         }
-        /* Exception: 2-child rows stay inline with natural widths */
+        /* Rows containing charts → single column full width */
+        [data-testid="stHorizontalBlock"]:has(.js-plotly-plot) > *,
+        [data-testid="stHorizontalBlock"]:has([data-testid="stDataFrame"]) > *,
+        [data-testid="stHorizontalBlock"]:has(.stPlotlyChart) > * {
+            width: 100% !important;
+            flex: 0 0 100% !important;
+            min-width: 100% !important;
+            max-width: 100% !important;
+        }
+        /* 2-child rows: keep natural widths (checkbox+info) */
         [data-testid="stHorizontalBlock"]:has(> :nth-child(2):last-child) {
             flex-wrap: nowrap !important;
         }
@@ -221,7 +230,7 @@ st.markdown("""<style>
             padding: 8px 14px !important;
             white-space: nowrap !important;
         }
-        /* Tables & charts */
+        /* Tables & charts overflow */
         [data-testid="stDataFrame"] { overflow-x: auto !important; }
         .js-plotly-plot, .plotly { max-width: 100% !important; overflow-x: hidden !important; }
     }
@@ -230,9 +239,7 @@ st.markdown("""<style>
     @media (min-width: 769px) and (max-width: 1024px) {
         [data-testid="stHorizontalBlock"] { flex-wrap: wrap !important; }
         [data-testid="stHorizontalBlock"] > * {
-            width: 48% !important;
-            flex: 0 0 48% !important;
-            min-width: 48% !important;
+            width: 48% !important; flex: 0 0 48% !important; min-width: 48% !important;
         }
         [data-testid="stHorizontalBlock"]:has(> :nth-child(2):last-child) { flex-wrap: nowrap !important; }
         [data-testid="stHorizontalBlock"]:has(> :nth-child(2):last-child) > * {
