@@ -179,35 +179,39 @@ st.markdown("""<style>
 # Auto-sync on startup (once per session)
 # ──────────────────────────────────────────────
 if "data_synced" not in st.session_state:
-    import subprocess
-
-    env = os.environ.copy()
     try:
         coros_secrets = st.secrets.get("coros", {})
         if coros_secrets:
-            env["COROS_ACCESS_TOKEN"] = str(coros_secrets.get("access_token", ""))
-            env["COROS_USER_ID"] = str(coros_secrets.get("user_id", ""))
-            env["COROS_COOKIE_WBKFRO"] = str(coros_secrets.get("cookie_wbkfro", ""))
-            env["COROS_COOKIE_REGION"] = str(coros_secrets.get("cookie_region", "2"))
-            env["COROS_BASE_URL"] = str(coros_secrets.get("base_url", "https://teamcnapi.coros.com"))
+            os.environ.setdefault("COROS_ACCESS_TOKEN", str(coros_secrets.get("access_token", "")))
+            os.environ.setdefault("COROS_USER_ID", str(coros_secrets.get("user_id", "")))
+            os.environ.setdefault("COROS_COOKIE_WBKFRO", str(coros_secrets.get("cookie_wbkfro", "")))
+            os.environ.setdefault("COROS_COOKIE_REGION", str(coros_secrets.get("cookie_region", "2")))
+            os.environ.setdefault("COROS_BASE_URL", str(coros_secrets.get("base_url", "https://teamcnapi.coros.com")))
     except Exception:
         pass
 
     with st.spinner("正在同步 COROS 数据..."):
         try:
-            result = subprocess.run(
-                [sys.executable, str(Path(__file__).parent / "fetch_coros_data.py")],
-                capture_output=True, text=True, timeout=120, env=env,
-            )
-            if result.returncode == 0:
-                new_lines = [l for l in result.stderr.splitlines() if "new" in l.lower() or "added" in l.lower() or "refreshed" in l.lower()]
-                summary = " · ".join(new_lines[-3:]) if new_lines else "数据已是最新"
-                st.toast(f"数据同步完成: {summary}", icon="✅")
+            import fetch_coros_data as fcd
+            fcd.CONFIG["access_token"] = os.environ.get("COROS_ACCESS_TOKEN", "")
+            _tok = fcd.CONFIG["access_token"]
+            fcd.CONFIG["cookies"]["_c_WBKFRo"] = os.environ.get("COROS_COOKIE_WBKFRO", "")
+            fcd.CONFIG["cookies"]["CPL-coros-token"] = _tok
+            fcd.CONFIG["cookies"]["CPL-coros-region"] = os.environ.get("COROS_COOKIE_REGION", "2")
+            fcd.CONFIG["user_id"] = os.environ.get("COROS_USER_ID", "")
+            fcd.CONFIG["base_url"] = os.environ.get("COROS_BASE_URL", "https://teamcnapi.coros.com")
+
+            if not _tok:
+                st.warning("未配置 COROS 凭据，跳过同步")
             else:
-                err_msg = (result.stderr or result.stdout or "未知错误")[-300:]
-                st.error(f"数据同步失败:\n```\n{err_msg}\n```")
+                fcd.DATA_DIR.mkdir(parents=True, exist_ok=True)
+                fcd.sync_activities()
+                fcd.sync_analyse()
+                fcd.sync_dashboard()
+                fcd._save_meta(fcd._load_meta())
+                st.toast("数据同步完成", icon="✅")
         except Exception as e:
-            st.error(f"同步异常: {e}")
+            st.warning(f"同步异常: {e}，使用本地缓存")
     st.session_state.data_synced = True
 
 # ──────────────────────────────────────────────

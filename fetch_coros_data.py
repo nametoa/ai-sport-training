@@ -102,7 +102,8 @@ def fetch_activities(known_ids: set[str]) -> list[dict]:
     while True:
         params = {"size": CONFIG["page_size"], "pageNumber": page, "modeList": ""}
         resp = requests.get(
-            url, params=params, headers=_headers(with_yf=True), cookies=_cookies()
+            url, params=params, headers=_headers(with_yf=True), cookies=_cookies(),
+            timeout=30,
         )
         resp.raise_for_status()
         body = resp.json()
@@ -134,7 +135,7 @@ def fetch_activities(known_ids: set[str]) -> list[dict]:
             break
 
         page += 1
-        time.sleep(0.3)
+        time.sleep(0.5)
 
     return all_new
 
@@ -161,7 +162,7 @@ def sync_activities():
 # ──────────────────────────────────────────────
 def sync_analyse():
     url = f"{CONFIG['base_url']}/analyse/query"
-    resp = requests.get(url, headers=_headers(with_yf=True), cookies=_cookies())
+    resp = requests.get(url, headers=_headers(with_yf=True), cookies=_cookies(), timeout=30)
     resp.raise_for_status()
     body = resp.json()
 
@@ -205,7 +206,7 @@ def sync_analyse():
 # ──────────────────────────────────────────────
 def sync_dashboard():
     url = f"{CONFIG['base_url']}/dashboard/detail/query"
-    resp = requests.get(url, headers=_headers(), cookies=_cookies())
+    resp = requests.get(url, headers=_headers(), cookies=_cookies(), timeout=30)
     resp.raise_for_status()
     body = resp.json()
 
