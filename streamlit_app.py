@@ -182,15 +182,18 @@ st.markdown("""<style>
             padding-left: 0.5rem !important;
             padding-right: 0.5rem !important;
         }
-        /* Stack all columns vertically on mobile */
+        /* Allow wrapping */
         [data-testid="stHorizontalBlock"] {
             flex-wrap: wrap !important;
         }
-        [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] {
-            width: 100% !important;
-            flex: 0 0 100% !important;
-            min-width: 100% !important;
+        /* 3+ columns → 2 per row (metrics, chart grids, etc.) */
+        [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child:nth-last-child(n+3),
+        [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child:nth-last-child(n+3) ~ [data-testid="stColumn"] {
+            width: 50% !important;
+            flex: 0 0 50% !important;
+            min-width: 0 !important;
         }
+        /* 2-column layouts (checkbox+info, filters) keep original flex ratios */
         /* Smaller metrics */
         div[data-testid='stMetric'] {
             padding: 10px 12px;
@@ -228,15 +231,16 @@ st.markdown("""<style>
         }
     }
 
-    /* Slightly wider phones / small tablets */
+    /* Tablets */
     @media (min-width: 769px) and (max-width: 1024px) {
         [data-testid="stHorizontalBlock"] {
             flex-wrap: wrap !important;
         }
-        [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] {
+        [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child:nth-last-child(n+3),
+        [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child:nth-last-child(n+3) ~ [data-testid="stColumn"] {
             width: 50% !important;
             flex: 0 0 50% !important;
-            min-width: 50% !important;
+            min-width: 0 !important;
         }
     }
 </style>""", unsafe_allow_html=True)
