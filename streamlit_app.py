@@ -489,8 +489,8 @@ with tab_analysis:
         df_days = pd.DataFrame(day_list)
         df_days["date_str"] = df_days["happenDay"].apply(fmt_date)
 
-        ncols = st.radio("每行图表数", [2, 3, 4], horizontal=True, index=0, key="analysis_cols")
-        chart_h = {2: 320, 3: 280, 4: 240}[ncols]
+        ncols = st.radio("每行图表数", [1, 2, 3, 4], horizontal=True, index=1, key="analysis_cols")
+        chart_h = {1: 380, 2: 320, 3: 280, 4: 240}[ncols]
 
         def _render_chart(fig):
             st.plotly_chart(fig, use_container_width=True)
