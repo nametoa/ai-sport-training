@@ -7078,6 +7078,94 @@
         }
       ],
       "trainingLoadTarget": 0.0
+    },
+    {
+      "ati": 75.0,
+      "avgSleepHrv": 70,
+      "ct7dMaxFixed": 908.6,
+      "ct7dMin": 420.0,
+      "cti": 75.0,
+      "distance": 0.0,
+      "distanceTarget": 0.0,
+      "duration": 0,
+      "durationTarget": 0,
+      "happenDay": 20260226,
+      "performance": -1,
+      "recomendTlMax": 932.4,
+      "recomendTlMin": 518.0,
+      "rhr": 48,
+      "sleepHrvBase": 62,
+      "sleepHrvIntervalList": [
+        5,
+        52,
+        57,
+        67
+      ],
+      "t28d": 2391,
+      "t7d": 553,
+      "testRhr": 51,
+      "tib": 0.0,
+      "timestamp": 1772035200,
+      "tiredRate": 43.0,
+      "tiredRateNew": 0.0,
+      "tiredRateNewZoneList": [
+        {
+          "max": -37.5,
+          "min": -75.0,
+          "type": 1
+        },
+        {
+          "max": -7.5,
+          "min": -37.5,
+          "type": 2
+        },
+        {
+          "max": 3.75,
+          "min": -7.5,
+          "type": 3
+        },
+        {
+          "max": 60.0,
+          "min": 3.75,
+          "type": 4
+        },
+        {
+          "min": 60.0,
+          "type": 5
+        }
+      ],
+      "tiredRateStateNew": 3,
+      "trainingLoad": 0,
+      "trainingLoadRatio": 1.0,
+      "trainingLoadRatioState": 4,
+      "trainingLoadRatioZoneList": [
+        {
+          "max": 0.5,
+          "min": 0.0,
+          "type": 1
+        },
+        {
+          "max": 0.8,
+          "min": 0.5,
+          "type": 2
+        },
+        {
+          "max": 1.0,
+          "min": 0.8,
+          "type": 3
+        },
+        {
+          "max": 1.5,
+          "min": 1.0,
+          "type": 4
+        },
+        {
+          "max": 1.8,
+          "min": 1.5,
+          "type": 5
+        }
+      ],
+      "trainingLoadTarget": 0.0
     }
   ],
   "record": {
@@ -7261,12 +7349,12 @@
           "periodLowValue": 1408.0,
           "periodMediumPct": 10.97,
           "periodMediumValue": 189.0,
-          "target": 52423.0,
+          "target": 24000.0,
           "value": 19733.52
         }
       ],
-      "percentage": 117.5,
-      "totalTarget": 346361.0,
+      "percentage": 128.0,
+      "totalTarget": 317938.0,
       "totalValue": 406914.35,
       "type": 1
     },
@@ -7450,12 +7538,12 @@
           "periodLowValue": 826,
           "periodMediumPct": 11.98,
           "periodMediumValue": 122,
-          "target": 20304,
+          "target": 9114,
           "value": 15868
         }
       ],
-      "percentage": 183.3,
-      "totalTarget": 123412,
+      "percentage": 201.6,
+      "totalTarget": 112222,
       "totalValue": 226252,
       "type": 1
     },
@@ -7639,12 +7727,12 @@
           "periodLowValue": 238,
           "periodMediumPct": 28.1,
           "periodMediumValue": 93,
-          "target": 474,
+          "target": 204,
           "value": 331
         }
       ],
-      "percentage": 190.4,
-      "totalTarget": 3010,
+      "percentage": 209.2,
+      "totalTarget": 2740,
       "totalValue": 5731,
       "type": 1
     }
@@ -7664,13 +7752,13 @@
       "trainingLoad": 102
     },
     {
-      "avgHeartRate": 145,
-      "avgPace": 475,
-      "count": 12,
-      "distance": 143041.75,
-      "duration": 67941,
+      "avgHeartRate": 146,
+      "avgPace": 480,
+      "count": 11,
+      "distance": 138034.97,
+      "duration": 66205,
       "sportType": 100,
-      "trainingLoad": 2284
+      "trainingLoad": 2251
     },
     {
       "avgHeartRate": 106,
@@ -7682,34 +7770,34 @@
       "trainingLoad": 10
     },
     {
-      "avgHeartRate": 125,
-      "count": 21,
-      "distance": 149604.22,
-      "duration": 87217,
+      "avgHeartRate": 124,
+      "count": 20,
+      "distance": 144597.43,
+      "duration": 85481,
       "sportType": 65535,
-      "trainingLoad": 2396
+      "trainingLoad": 2363
     }
   ],
   "summaryInfo": {
     "disAreaList": [
       {
         "index": 0,
-        "ratio": 39.8,
-        "value": 35240.48
+        "ratio": 36.9,
+        "value": 30842.69
       },
       {
         "index": 1,
-        "ratio": 48.5,
-        "value": 42979.0
+        "ratio": 50.7,
+        "value": 42370.0
       },
       {
         "index": 2,
-        "ratio": 6.9,
+        "ratio": 7.3,
         "value": 6129.0
       },
       {
         "index": 3,
-        "ratio": 2.4,
+        "ratio": 2.5,
         "value": 2097.0
       },
       {
@@ -7719,34 +7807,34 @@
       },
       {
         "index": 5,
-        "ratio": 1.1,
+        "ratio": 1.2,
         "value": 977.0
       },
       {
         "index": 6,
-        "ratio": 1.0,
+        "ratio": 1.1,
         "value": 888.0
       }
     ],
     "distanceCountAreaList": [
       {
         "index": 0,
-        "ratio": 47.8,
+        "ratio": 50.0,
         "value": 11.0
       },
       {
         "index": 1,
-        "ratio": 17.4,
-        "value": 4.0
+        "ratio": 13.6,
+        "value": 3.0
       },
       {
         "index": 2,
-        "ratio": 26.1,
+        "ratio": 27.3,
         "value": 6.0
       },
       {
         "index": 3,
-        "ratio": 4.3,
+        "ratio": 4.5,
         "value": 1.0
       },
       {
@@ -7756,29 +7844,29 @@
       },
       {
         "index": 5,
-        "ratio": 4.4,
+        "ratio": 4.6,
         "value": 1.0
       }
     ],
     "distanceTimeAreaList": [
       {
         "index": 0,
-        "ratio": 27.5,
+        "ratio": 28.0,
         "value": 25918.0
       },
       {
         "index": 1,
-        "ratio": 10.6,
-        "value": 9997.0
+        "ratio": 8.9,
+        "value": 8261.0
       },
       {
         "index": 2,
-        "ratio": 21.2,
+        "ratio": 21.6,
         "value": 19947.0
       },
       {
         "index": 3,
-        "ratio": 14.5,
+        "ratio": 14.8,
         "value": 13677.0
       },
       {
@@ -7788,29 +7876,29 @@
       },
       {
         "index": 5,
-        "ratio": 26.2,
+        "ratio": 26.7,
         "value": 24704.0
       }
     ],
     "distanceTlAreaList": [
       {
         "index": 0,
-        "ratio": 6.4,
+        "ratio": 6.5,
         "value": 156.0
       },
       {
         "index": 1,
-        "ratio": 9.3,
-        "value": 225.0
+        "ratio": 8.0,
+        "value": 192.0
       },
       {
         "index": 2,
-        "ratio": 34.2,
+        "ratio": 34.7,
         "value": 830.0
       },
       {
         "index": 3,
-        "ratio": 13.4,
+        "ratio": 13.6,
         "value": 325.0
       },
       {
@@ -7820,66 +7908,66 @@
       },
       {
         "index": 5,
-        "ratio": 36.7,
+        "ratio": 37.2,
         "value": 888.0
       }
     ],
     "hrDisAreaList": [
       {
         "index": 0,
-        "ratio": 28.7,
-        "value": 44256.61
+        "ratio": 28.5,
+        "value": 42586.82
       },
       {
         "index": 1,
-        "ratio": 38.2,
-        "value": 59065.0
+        "ratio": 37.3,
+        "value": 55734.0
       },
       {
         "index": 2,
-        "ratio": 16.8,
-        "value": 25899.0
+        "ratio": 17.3,
+        "value": 25893.0
       },
       {
         "index": 3,
-        "ratio": 14.3,
+        "ratio": 14.7,
         "value": 22013.0
       },
       {
         "index": 4,
-        "ratio": 2.0,
+        "ratio": 2.1,
         "value": 3140.0
       },
       {
         "index": 5,
-        "ratio": 0.0,
+        "ratio": 0.1,
         "value": 56.0
       }
     ],
     "hrTimeAreaList": [
       {
         "index": 0,
-        "ratio": 45.2,
-        "value": 42598.0
+        "ratio": 45.4,
+        "value": 42019.0
       },
       {
         "index": 1,
-        "ratio": 30.4,
-        "value": 28613.0
+        "ratio": 29.7,
+        "value": 27459.0
       },
       {
         "index": 2,
-        "ratio": 13.3,
-        "value": 12549.0
+        "ratio": 13.6,
+        "value": 12546.0
       },
       {
         "index": 3,
-        "ratio": 10.2,
+        "ratio": 10.4,
         "value": 9589.0
       },
       {
         "index": 4,
-        "ratio": 0.9,
+        "ratio": 1.0,
         "value": 880.0
       },
       {
@@ -7891,32 +7979,32 @@
     "hrTlAreaList": [
       {
         "index": 0,
-        "ratio": 15.3,
-        "value": 372.0
+        "ratio": 15.1,
+        "value": 361.0
       },
       {
         "index": 1,
-        "ratio": 33.3,
-        "value": 807.0
+        "ratio": 32.8,
+        "value": 785.0
       },
       {
         "index": 2,
-        "ratio": 22.6,
+        "ratio": 22.9,
         "value": 548.0
       },
       {
         "index": 3,
-        "ratio": 24.8,
+        "ratio": 25.2,
         "value": 602.0
       },
       {
         "index": 4,
-        "ratio": 3.8,
+        "ratio": 3.9,
         "value": 93.0
       },
       {
         "index": 5,
-        "ratio": 0.2,
+        "ratio": 0.1,
         "value": 2.0
       }
     ],
@@ -7924,22 +8012,22 @@
     "timeAreaList": [
       {
         "index": 0,
-        "ratio": 43.6,
-        "value": 12198.0
+        "ratio": 40.6,
+        "value": 10668.0
       },
       {
         "index": 1,
-        "ratio": 45.6,
-        "value": 12775.0
+        "ratio": 47.8,
+        "value": 12569.0
       },
       {
         "index": 2,
-        "ratio": 6.2,
+        "ratio": 6.6,
         "value": 1738.0
       },
       {
         "index": 3,
-        "ratio": 2.2,
+        "ratio": 2.3,
         "value": 616.0
       },
       {
@@ -7949,34 +8037,34 @@
       },
       {
         "index": 5,
-        "ratio": 1.1,
+        "ratio": 1.2,
         "value": 308.0
       },
       {
         "index": 6,
-        "ratio": 1.0,
+        "ratio": 1.2,
         "value": 286.0
       }
     ],
     "tlAreaList": [
       {
         "index": 0,
-        "ratio": 27.5,
-        "value": 289.0
+        "ratio": 25.7,
+        "value": 261.0
       },
       {
         "index": 1,
-        "ratio": 50.6,
-        "value": 531.0
+        "ratio": 51.7,
+        "value": 526.0
       },
       {
         "index": 2,
-        "ratio": 10.0,
+        "ratio": 10.3,
         "value": 105.0
       },
       {
         "index": 3,
-        "ratio": 3.7,
+        "ratio": 3.8,
         "value": 39.0
       },
       {
@@ -7986,110 +8074,17 @@
       },
       {
         "index": 5,
-        "ratio": 3.0,
+        "ratio": 3.1,
         "value": 32.0
       },
       {
         "index": 6,
-        "ratio": 4.6,
+        "ratio": 4.8,
         "value": 48.0
       }
     ]
   },
   "t7dayList": [
-    {
-      "ati": 22.0,
-      "avgSleepHrv": 55,
-      "ct7dMaxFixed": 954.8,
-      "ct7dMin": 369.6,
-      "cti": 66.0,
-      "distance": 0.0,
-      "distanceTarget": 0.0,
-      "duration": 0,
-      "durationTarget": 0,
-      "happenDay": 20260129,
-      "lthr": 170,
-      "ltsp": 227,
-      "performance": 0,
-      "recomendTlMax": 894.6,
-      "recomendTlMin": 497.0,
-      "rhr": 51,
-      "sleepHrvBase": 61,
-      "sleepHrvIntervalList": [
-        5,
-        51,
-        56,
-        66
-      ],
-      "staminaLevel": 94.0,
-      "staminaLevel7d": 95.0,
-      "t28d": 1334,
-      "t7d": 33,
-      "testRhr": 51,
-      "tib": 44.0,
-      "timestamp": 1769616000,
-      "tiredRate": 13.0,
-      "tiredRateNew": -44.0,
-      "tiredRateNewZoneList": [
-        {
-          "max": -33.0,
-          "min": -66.0,
-          "type": 1
-        },
-        {
-          "max": -6.6000000000000005,
-          "min": -33.0,
-          "type": 2
-        },
-        {
-          "max": 3.3000000000000003,
-          "min": -6.6000000000000005,
-          "type": 3
-        },
-        {
-          "max": 52.800000000000004,
-          "min": 3.3000000000000003,
-          "type": 4
-        },
-        {
-          "min": 52.800000000000004,
-          "type": 5
-        }
-      ],
-      "tiredRateStateNew": 1,
-      "trainingLoad": 33,
-      "trainingLoadRatio": 0.33,
-      "trainingLoadRatioState": 1,
-      "trainingLoadRatioZoneList": [
-        {
-          "max": 0.5,
-          "min": 0.0,
-          "type": 1
-        },
-        {
-          "max": 0.8,
-          "min": 0.5,
-          "type": 2
-        },
-        {
-          "max": 1.0,
-          "min": 0.8,
-          "type": 3
-        },
-        {
-          "max": 1.5,
-          "min": 1.0,
-          "type": 4
-        },
-        {
-          "max": 1.8,
-          "min": 1.5,
-          "type": 5
-        }
-      ],
-      "trainingLoadTarget": 0.0,
-      "vo2max": 57
-    },
     {
       "ati": 18.0,
       "avgSleepHrv": 61,
@@ -10505,6 +10500,94 @@
         }
       ],
       "trainingLoadTarget": 0.0
+    },
+    {
+      "ati": 75.0,
+      "avgSleepHrv": 70,
+      "ct7dMaxFixed": 908.6,
+      "ct7dMin": 420.0,
+      "cti": 75.0,
+      "distance": 0.0,
+      "distanceTarget": 0.0,
+      "duration": 0,
+      "durationTarget": 0,
+      "happenDay": 20260226,
+      "performance": -1,
+      "recomendTlMax": 932.4,
+      "recomendTlMin": 518.0,
+      "rhr": 48,
+      "sleepHrvBase": 62,
+      "sleepHrvIntervalList": [
+        5,
+        52,
+        57,
+        67
+      ],
+      "t28d": 2391,
+      "t7d": 553,
+      "testRhr": 51,
+      "tib": 0.0,
+      "timestamp": 1772035200,
+      "tiredRate": 43.0,
+      "tiredRateNew": 0.0,
+      "tiredRateNewZoneList": [
+        {
+          "max": -37.5,
+          "min": -75.0,
+          "type": 1
+        },
+        {
+          "max": -7.5,
+          "min": -37.5,
+          "type": 2
+        },
+        {
+          "max": 3.75,
+          "min": -7.5,
+          "type": 3
+        },
+        {
+          "max": 60.0,
+          "min": 3.75,
+          "type": 4
+        },
+        {
+          "min": 60.0,
+          "type": 5
+        }
+      ],
+      "tiredRateStateNew": 3,
+      "trainingLoad": 0,
+      "trainingLoadRatio": 1.0,
+      "trainingLoadRatioState": 4,
+      "trainingLoadRatioZoneList": [
+        {
+          "max": 0.5,
+          "min": 0.0,
+          "type": 1
+        },
+        {
+          "max": 0.8,
+          "min": 0.5,
+          "type": 2
+        },
+        {
+          "max": 1.0,
+          "min": 0.8,
+          "type": 3
+        },
+        {
+          "max": 1.5,
+          "min": 1.0,
+          "type": 4
+        },
+        {
+          "max": 1.8,
+          "min": 1.5,
+          "type": 5
+        }
+      ],
+      "trainingLoadTarget": 0.0
     }
   ],
   "tlIntensity": {
@@ -10512,122 +10595,101 @@
     "detailList": [
       {
         "count": 0,
-        "firstDayOfWeek": 20250911,
-        "firstDayOfWeekTimestamp": 1757520000,
-        "lastDayInWeek": 20251008,
-        "lastDayOfWeekTimestamp": 1759852800,
-        "periodHighPct": 4.2,
+        "firstDayOfWeek": 20250912,
+        "firstDayOfWeekTimestamp": 1757606400,
+        "lastDayInWeek": 20251009,
+        "lastDayOfWeekTimestamp": 1759939200,
+        "periodHighPct": 4.44,
         "periodHighValue": 107,
-        "periodLowPct": 36.51,
-        "periodLowValue": 930,
-        "periodMediumPct": 59.29,
-        "periodMediumValue": 1510,
+        "periodLowPct": 33.25,
+        "periodLowValue": 802,
+        "periodMediumPct": 62.31,
+        "periodMediumValue": 1503,
         "target": 0,
-        "value": 2547
+        "value": 2412
       },
       {
         "count": 0,
-        "firstDayOfWeek": 20251009,
-        "firstDayOfWeekTimestamp": 1759939200,
-        "lastDayInWeek": 20251105,
-        "lastDayOfWeekTimestamp": 1762272000,
-        "periodHighPct": 2.21,
+        "firstDayOfWeek": 20251010,
+        "firstDayOfWeekTimestamp": 1760025600,
+        "lastDayInWeek": 20251106,
+        "lastDayOfWeekTimestamp": 1762358400,
+        "periodHighPct": 2.23,
         "periodHighValue": 63,
-        "periodLowPct": 72.18,
-        "periodLowValue": 2055,
-        "periodMediumPct": 25.61,
+        "periodLowPct": 72.01,
+        "periodLowValue": 2038,
+        "periodMediumPct": 25.76,
         "periodMediumValue": 729,
         "target": 0,
-        "value": 2847
+        "value": 2830
       },
       {
         "count": 0,
-        "firstDayOfWeek": 20251106,
-        "firstDayOfWeekTimestamp": 1762358400,
-        "lastDayInWeek": 20251203,
-        "lastDayOfWeekTimestamp": 1764691200,
-        "periodHighPct": 3.17,
-        "periodHighValue": 89,
-        "periodLowPct": 52.38,
-        "periodLowValue": 1473,
-        "periodMediumPct": 44.45,
-        "periodMediumValue": 1250,
+        "firstDayOfWeek": 20251107,
+        "firstDayOfWeekTimestamp": 1762444800,
+        "lastDayInWeek": 20251204,
+        "lastDayOfWeekTimestamp": 1764777600,
+        "periodHighPct": 3.16,
+        "periodHighValue": 91,
+        "periodLowPct": 53.34,
+        "periodLowValue": 1539,
+        "periodMediumPct": 43.5,
+        "periodMediumValue": 1255,
         "target": 0,
-        "value": 2812
+        "value": 2885
       },
       {
         "count": 0,
-        "firstDayOfWeek": 20251204,
-        "firstDayOfWeekTimestamp": 1764777600,
-        "lastDayInWeek": 20251231,
-        "lastDayOfWeekTimestamp": 1767110400,
-        "periodHighPct": 11.62,
-        "periodHighValue": 253,
-        "periodLowPct": 64.72,
-        "periodLowValue": 1409,
-        "periodMediumPct": 23.66,
-        "periodMediumValue": 515,
+        "firstDayOfWeek": 20251205,
+        "firstDayOfWeekTimestamp": 1764864000,
+        "lastDayInWeek": 20260101,
+        "lastDayOfWeekTimestamp": 1767196800,
+        "periodHighPct": 10.85,
+        "periodHighValue": 256,
+        "periodLowPct": 65.75,
+        "periodLowValue": 1551,
+        "periodMediumPct": 23.4,
+        "periodMediumValue": 552,
         "target": 0,
-        "value": 2177
+        "value": 2359
       },
       {
         "count": 0,
-        "firstDayOfWeek": 20260101,
-        "firstDayOfWeekTimestamp": 1767196800,
-        "lastDayInWeek": 20260128,
-        "lastDayOfWeekTimestamp": 1769529600,
-        "periodHighPct": 3.33,
-        "periodHighValue": 52,
-        "periodLowPct": 71.88,
-        "periodLowValue": 1125,
-        "periodMediumPct": 24.79,
-        "periodMediumValue": 388,
+        "firstDayOfWeek": 20260102,
+        "firstDayOfWeekTimestamp": 1767283200,
+        "lastDayInWeek": 20260129,
+        "lastDayOfWeekTimestamp": 1769616000,
+        "periodHighPct": 3.52,
+        "periodHighValue": 47,
+        "periodLowPct": 70.54,
+        "periodLowValue": 941,
+        "periodMediumPct": 25.94,
+        "periodMediumValue": 346,
         "target": 0,
-        "value": 1565
+        "value": 1334
       },
       {
         "count": 0,
-        "firstDayOfWeek": 20260129,
-        "firstDayOfWeekTimestamp": 1769616000,
-        "lastDayInWeek": 20260225,
-        "lastDayOfWeekTimestamp": 1771948800,
-        "periodHighPct": 3.55,
+        "firstDayOfWeek": 20260130,
+        "firstDayOfWeekTimestamp": 1769702400,
+        "lastDayInWeek": 20260226,
+        "lastDayOfWeekTimestamp": 1772035200,
+        "periodHighPct": 3.6,
         "periodHighValue": 86,
-        "periodLowPct": 66.75,
-        "periodLowValue": 1618,
-        "periodMediumPct": 29.7,
+        "periodLowPct": 66.29,
+        "periodLowValue": 1585,
+        "periodMediumPct": 30.11,
         "periodMediumValue": 720,
         "target": 0,
-        "value": 2424
+        "value": 2391
       }
     ],
     "percentage": 0.0,
     "totalTarget": 0,
-    "totalValue": 14372,
+    "totalValue": 14211,
     "type": 2
   },
-  "trainingWeekStageList": [
-    {
-      "firstDayInWeek": 20260202,
-      "lastDayInWeek": 20260208,
-      "stage": 2
-    },
-    {
-      "firstDayInWeek": 20260209,
-      "lastDayInWeek": 20260215,
-      "stage": 2
-    },
-    {
-      "firstDayInWeek": 20260216,
-      "lastDayInWeek": 20260222,
-      "stage": 2
-    },
-    {
-      "firstDayInWeek": 20260223,
-      "lastDayInWeek": 20260301,
-      "stage": 2
-    }
-  ],
+  "trainingWeekStageList": [],
   "weekList": [
     {
       "firstDayOfWeek": 20260119,
