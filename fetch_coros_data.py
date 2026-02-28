@@ -43,6 +43,16 @@ logging.basicConfig(
 log = logging.getLogger(__name__)
 
 
+class TokenInvalidError(Exception):
+    """Raised when the COROS API reports the access token is invalid."""
+
+
+def _check_token_response(body: dict):
+    msg = str(body.get("message", ""))
+    if "token" in msg.lower() and "invalid" in msg.lower():
+        raise TokenInvalidError(msg)
+
+
 def _headers(with_yf: bool = False) -> dict:
     h = {
         "accept": "application/json, text/plain, */*",
@@ -109,6 +119,7 @@ def fetch_activities(known_ids: set[str]) -> list[dict]:
         body = resp.json()
 
         if body.get("result") != "0000":
+            _check_token_response(body)
             log.error("Activity API error: %s", body.get("message"))
             break
 
@@ -167,6 +178,7 @@ def sync_analyse():
     body = resp.json()
 
     if body.get("result") != "0000":
+        _check_token_response(body)
         log.error("Analyse API error: %s", body.get("message"))
         return
 
@@ -211,6 +223,7 @@ def sync_dashboard():
     body = resp.json()
 
     if body.get("result") != "0000":
+        _check_token_response(body)
         log.error("Dashboard API error: %s", body.get("message"))
         return
 

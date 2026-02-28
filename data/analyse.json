@@ -1,251 +1,6 @@
 {
   "dayList": [
     {
-      "ati": 96.0,
-      "ct7dMaxFixed": 932.4,
-      "ct7dMin": 487.2,
-      "cti": 87.0,
-      "distance": 0.0,
-      "distanceTarget": 0.0,
-      "duration": 0,
-      "durationTarget": 0,
-      "happenDay": 20251204,
-      "lthr": 170,
-      "ltsp": 227,
-      "performance": 1,
-      "recomendTlMax": 509.6,
-      "recomendTlMin": 318.5,
-      "rhr": 44,
-      "staminaLevel": 93.7,
-      "staminaLevel7d": 98.0,
-      "t28d": 2885,
-      "t7d": 895,
-      "testRhr": 49,
-      "tib": -9.0,
-      "timestamp": 1764777600,
-      "tiredRate": 49.0,
-      "tiredRateNew": 9.0,
-      "tiredRateNewZoneList": [
-        {
-          "max": -43.5,
-          "min": -87.0,
-          "type": 1
-        },
-        {
-          "max": -8.700000000000001,
-          "min": -43.5,
-          "type": 2
-        },
-        {
-          "max": 4.3500000000000005,
-          "min": -8.700000000000001,
-          "type": 3
-        },
-        {
-          "max": 43.5,
-          "min": 4.3500000000000005,
-          "type": 4
-        },
-        {
-          "min": 43.5,
-          "type": 5
-        }
-      ],
-      "tiredRateStateNew": 4,
-      "trainingLoad": 82,
-      "trainingLoadRatio": 1.1,
-      "trainingLoadRatioState": 4,
-      "trainingLoadRatioZoneList": [
-        {
-          "max": 0.5,
-          "min": 0.0,
-          "type": 1
-        },
-        {
-          "max": 0.8,
-          "min": 0.5,
-          "type": 2
-        },
-        {
-          "max": 1.0,
-          "min": 0.8,
-          "type": 3
-        },
-        {
-          "max": 1.5,
-          "min": 1.0,
-          "type": 4
-        },
-        {
-          "max": 1.8,
-          "min": 1.5,
-          "type": 5
-        }
-      ],
-      "trainingLoadTarget": 0.0,
-      "vo2max": 60
-    },
-    {
-      "ati": 82.0,
-      "ct7dMaxFixed": 919.8,
-      "ct7dMin": 476.0,
-      "cti": 85.0,
-      "distance": 0.0,
-      "distanceTarget": 0.0,
-      "duration": 0,
-      "durationTarget": 0,
-      "happenDay": 20251205,
-      "performance": -1,
-      "recomendTlMax": 509.6,
-      "recomendTlMin": 318.5,
-      "rhr": 46,
-      "t28d": 2886,
-      "t7d": 895,
-      "testRhr": 48,
-      "tib": 3.0,
-      "timestamp": 1764864000,
-      "tiredRate": 45.0,
-      "tiredRateNew": -3.0,
-      "tiredRateNewZoneList": [
-        {
-          "max": -42.5,
-          "min": -85.0,
-          "type": 1
-        },
-        {
-          "max": -8.5,
-          "min": -42.5,
-          "type": 2
-        },
-        {
-          "max": 4.25,
-          "min": -8.5,
-          "type": 3
-        },
-        {
-          "max": 42.5,
-          "min": 4.25,
-          "type": 4
-        },
-        {
-          "min": 42.5,
-          "type": 5
-        }
-      ],
-      "tiredRateStateNew": 3,
-      "trainingLoad": 1,
-      "trainingLoadRatio": 0.96,
-      "trainingLoadRatioState": 3,
-      "trainingLoadRatioZoneList": [
-        {
-          "max": 0.5,
-          "min": 0.0,
-          "type": 1
-        },
-        {
-          "max": 0.8,
-          "min": 0.5,
-          "type": 2
-        },
-        {
-          "max": 1.0,
-          "min": 0.8,
-          "type": 3
-        },
-        {
-          "max": 1.5,
-          "min": 1.0,
-          "type": 4
-        },
-        {
-          "max": 1.8,
-          "min": 1.5,
-          "type": 5
-        }
-      ],
-      "trainingLoadTarget": 0.0
-    },
-    {
-      "ati": 121.0,
-      "ct7dMaxFixed": 994.0,
-      "ct7dMin": 526.4,
-      "cti": 94.0,
-      "distance": 0.0,
-      "distanceTarget": 0.0,
-      "duration": 0,
-      "durationTarget": 0,
-      "happenDay": 20251206,
-      "performance": -1,
-      "recomendTlMax": 509.6,
-      "recomendTlMin": 318.5,
-      "rhr": 47,
-      "t28d": 3238,
-      "t7d": 513,
-      "testRhr": 52,
-      "tib": -27.0,
-      "timestamp": 1764950400,
-      "tiredRate": 48.0,
-      "tiredRateNew": 27.0,
-      "tiredRateNewZoneList": [
-        {
-          "max": -47.0,
-          "min": -94.0,
-          "type": 1
-        },
-        {
-          "max": -9.4,
-          "min": -47.0,
-          "type": 2
-        },
-        {
-          "max": 4.7,
-          "min": -9.4,
-          "type": 3
-        },
-        {
-          "max": 75.2,
-          "min": 4.7,
-          "type": 4
-        },
-        {
-          "min": 75.2,
-          "type": 5
-        }
-      ],
-      "tiredRateStateNew": 4,
-      "trainingLoad": 352,
-      "trainingLoadRatio": 1.28,
-      "trainingLoadRatioState": 4,
-      "trainingLoadRatioZoneList": [
-        {
-          "max": 0.5,
-          "min": 0.0,
-          "type": 1
-        },
-        {
-          "max": 0.8,
-          "min": 0.5,
-          "type": 2
-        },
-        {
-          "max": 1.0,
-          "min": 0.8,
-          "type": 3
-        },
-        {
-          "max": 1.5,
-          "min": 1.0,
-          "type": 4
-        },
-        {
-          "max": 1.8,
-          "min": 1.5,
-          "type": 5
-        }
-      ],
-      "trainingLoadTarget": 0.0
-    },
-    {
       "ati": 103.0,
       "ct7dMaxFixed": 1064.7,
       "ct7dMin": 515.2,
@@ -4572,7 +4327,6 @@
     },
     {
       "ati": 22.0,
-      "avgSleepHrv": 55,
       "ct7dMaxFixed": 954.8,
       "ct7dMin": 369.6,
       "cti": 66.0,
@@ -4587,13 +4341,6 @@
       "recomendTlMax": 894.6,
       "recomendTlMin": 497.0,
       "rhr": 51,
-      "sleepHrvBase": 61,
-      "sleepHrvIntervalList": [
-        5,
-        51,
-        56,
-        66
-      ],
       "staminaLevel": 94.0,
       "staminaLevel7d": 95.0,
       "t28d": 1334,
@@ -4665,7 +4412,6 @@
     },
     {
       "ati": 18.0,
-      "avgSleepHrv": 61,
       "ct7dMaxFixed": 935.2,
       "ct7dMin": 358.4,
       "cti": 64.0,
@@ -4678,13 +4424,6 @@
       "recomendTlMax": 894.6,
       "recomendTlMin": 497.0,
       "rhr": 51,
-      "sleepHrvBase": 61,
-      "sleepHrvIntervalList": [
-        5,
-        50,
-        56,
-        66
-      ],
       "t28d": 1334,
       "t7d": 33,
       "testRhr": 51,
@@ -4753,7 +4492,6 @@
     },
     {
       "ati": 19.0,
-      "avgSleepHrv": 60,
       "ct7dMaxFixed": 915.6,
       "ct7dMin": 352.8,
       "cti": 63.0,
@@ -4766,13 +4504,6 @@
       "recomendTlMax": 894.6,
       "recomendTlMin": 497.0,
       "rhr": 47,
-      "sleepHrvBase": 61,
-      "sleepHrvIntervalList": [
-        5,
-        51,
-        56,
-        66
-      ],
       "t28d": 1074,
       "t7d": 55,
       "testRhr": 50,
@@ -7080,17 +6811,19 @@
       "trainingLoadTarget": 0.0
     },
     {
-      "ati": 75.0,
+      "ati": 90.0,
       "avgSleepHrv": 70,
-      "ct7dMaxFixed": 908.6,
-      "ct7dMin": 420.0,
-      "cti": 75.0,
+      "ct7dMaxFixed": 860.3,
+      "ct7dMin": 431.2,
+      "cti": 77.0,
       "distance": 0.0,
       "distanceTarget": 0.0,
       "duration": 0,
       "durationTarget": 0,
       "happenDay": 20260226,
-      "performance": -1,
+      "lthr": 170,
+      "ltsp": 226,
+      "performance": 3,
       "recomendTlMax": 932.4,
       "recomendTlMin": 518.0,
       "rhr": 48,
@@ -7101,13 +6834,104 @@
         57,
         67
       ],
-      "t28d": 2391,
-      "t7d": 553,
+      "staminaLevel": 94.2,
+      "staminaLevel7d": 102.0,
+      "t28d": 2492,
+      "t7d": 654,
       "testRhr": 51,
-      "tib": 0.0,
+      "tib": -13.0,
       "timestamp": 1772035200,
-      "tiredRate": 43.0,
-      "tiredRateNew": 0.0,
+      "tiredRate": 51.0,
+      "tiredRateNew": 13.0,
+      "tiredRateNewZoneList": [
+        {
+          "max": -38.5,
+          "min": -77.0,
+          "type": 1
+        },
+        {
+          "max": -7.7,
+          "min": -38.5,
+          "type": 2
+        },
+        {
+          "max": 3.85,
+          "min": -7.7,
+          "type": 3
+        },
+        {
+          "max": 38.5,
+          "min": 3.85,
+          "type": 4
+        },
+        {
+          "min": 38.5,
+          "type": 5
+        }
+      ],
+      "tiredRateStateNew": 4,
+      "trainingLoad": 101,
+      "trainingLoadRatio": 1.16,
+      "trainingLoadRatioState": 4,
+      "trainingLoadRatioZoneList": [
+        {
+          "max": 0.5,
+          "min": 0.0,
+          "type": 1
+        },
+        {
+          "max": 0.8,
+          "min": 0.5,
+          "type": 2
+        },
+        {
+          "max": 1.0,
+          "min": 0.8,
+          "type": 3
+        },
+        {
+          "max": 1.5,
+          "min": 1.0,
+          "type": 4
+        },
+        {
+          "max": 1.8,
+          "min": 1.5,
+          "type": 5
+        }
+      ],
+      "trainingLoadTarget": 0.0,
+      "vo2max": 57
+    },
+    {
+      "ati": 77.0,
+      "avgSleepHrv": 56,
+      "ct7dMaxFixed": 863.1,
+      "ct7dMin": 420.0,
+      "cti": 75.0,
+      "distance": 0.0,
+      "distanceTarget": 0.0,
+      "duration": 0,
+      "durationTarget": 0,
+      "happenDay": 20260227,
+      "performance": -1,
+      "recomendTlMax": 932.4,
+      "recomendTlMin": 518.0,
+      "rhr": 53,
+      "sleepHrvBase": 63,
+      "sleepHrvIntervalList": [
+        5,
+        52,
+        58,
+        68
+      ],
+      "t28d": 2492,
+      "t7d": 567,
+      "testRhr": 53,
+      "tib": -2.0,
+      "timestamp": 1772121600,
+      "tiredRate": 44.0,
+      "tiredRateNew": 2.0,
       "tiredRateNewZoneList": [
         {
           "max": -37.5,
@@ -7136,8 +6960,96 @@
       ],
       "tiredRateStateNew": 3,
       "trainingLoad": 0,
-      "trainingLoadRatio": 1.0,
+      "trainingLoadRatio": 1.02,
       "trainingLoadRatioState": 4,
+      "trainingLoadRatioZoneList": [
+        {
+          "max": 0.5,
+          "min": 0.0,
+          "type": 1
+        },
+        {
+          "max": 0.8,
+          "min": 0.5,
+          "type": 2
+        },
+        {
+          "max": 1.0,
+          "min": 0.8,
+          "type": 3
+        },
+        {
+          "max": 1.5,
+          "min": 1.0,
+          "type": 4
+        },
+        {
+          "max": 1.8,
+          "min": 1.5,
+          "type": 5
+        }
+      ],
+      "trainingLoadTarget": 0.0
+    },
+    {
+      "ati": 66.0,
+      "avgSleepHrv": 59,
+      "ct7dMaxFixed": 899.5,
+      "ct7dMin": 408.8,
+      "cti": 73.0,
+      "distance": 0.0,
+      "distanceTarget": 0.0,
+      "duration": 0,
+      "durationTarget": 0,
+      "happenDay": 20260228,
+      "performance": -1,
+      "recomendTlMax": 932.4,
+      "recomendTlMin": 518.0,
+      "rhr": 49,
+      "sleepHrvBase": 63,
+      "sleepHrvIntervalList": [
+        5,
+        52,
+        58,
+        68
+      ],
+      "t28d": 2470,
+      "t7d": 432,
+      "testRhr": 53,
+      "tib": 7.0,
+      "timestamp": 1772208000,
+      "tiredRate": 42.0,
+      "tiredRateNew": -7.0,
+      "tiredRateNewZoneList": [
+        {
+          "max": -36.5,
+          "min": -73.0,
+          "type": 1
+        },
+        {
+          "max": -7.300000000000001,
+          "min": -36.5,
+          "type": 2
+        },
+        {
+          "max": 3.6500000000000004,
+          "min": -7.300000000000001,
+          "type": 3
+        },
+        {
+          "max": 58.400000000000006,
+          "min": 3.6500000000000004,
+          "type": 4
+        },
+        {
+          "min": 58.400000000000006,
+          "type": 5
+        }
+      ],
+      "tiredRateStateNew": 3,
+      "trainingLoad": 0,
+      "trainingLoadRatio": 0.9,
+      "trainingLoadRatioState": 3,
       "trainingLoadRatioZoneList": [
         {
           "max": 0.5,
@@ -7343,19 +7255,19 @@
           "firstDayOfWeekTimestamp": 1771776000,
           "lastDayInWeek": 20260301,
           "lastDayOfWeekTimestamp": 1772294400,
-          "periodHighPct": 7.31,
-          "periodHighValue": 126.0,
-          "periodLowPct": 81.72,
-          "periodLowValue": 1408.0,
-          "periodMediumPct": 10.97,
-          "periodMediumValue": 189.0,
-          "target": 24000.0,
-          "value": 19733.52
+          "periodHighPct": 6.08,
+          "periodHighValue": 480.0,
+          "periodLowPct": 85.42,
+          "periodLowValue": 6746.0,
+          "periodMediumPct": 8.5,
+          "periodMediumValue": 671.0,
+          "target": 82894.0,
+          "value": 29909.22
         }
       ],
-      "percentage": 128.0,
-      "totalTarget": 317938.0,
-      "totalValue": 406914.35,
+      "percentage": 110.7,
+      "totalTarget": 376832.0,
+      "totalValue": 417090.05,
       "type": 1
     },
     "durationRecord": {
@@ -7532,19 +7444,19 @@
           "firstDayOfWeekTimestamp": 1771776000,
           "lastDayInWeek": 20260301,
           "lastDayOfWeekTimestamp": 1772294400,
-          "periodHighPct": 6.88,
-          "periodHighValue": 70,
-          "periodLowPct": 81.14,
-          "periodLowValue": 826,
-          "periodMediumPct": 11.98,
-          "periodMediumValue": 122,
-          "target": 9114,
-          "value": 15868
+          "periodHighPct": 6.39,
+          "periodHighValue": 190,
+          "periodLowPct": 83.8,
+          "periodLowValue": 2494,
+          "periodMediumPct": 9.81,
+          "periodMediumValue": 292,
+          "target": 40374,
+          "value": 20406
         }
       ],
-      "percentage": 201.6,
-      "totalTarget": 112222,
-      "totalValue": 226252,
+      "percentage": 160.8,
+      "totalTarget": 143482,
+      "totalValue": 230790,
       "type": 1
     },
     "tlRecord": {
@@ -7721,44 +7633,44 @@
           "firstDayOfWeekTimestamp": 1771776000,
           "lastDayInWeek": 20260301,
           "lastDayOfWeekTimestamp": 1772294400,
-          "periodHighPct": 0.0,
-          "periodHighValue": 0,
-          "periodLowPct": 71.9,
-          "periodLowValue": 238,
-          "periodMediumPct": 28.1,
-          "periodMediumValue": 93,
-          "target": 204,
-          "value": 331
+          "periodHighPct": 2.55,
+          "periodHighValue": 11,
+          "periodLowPct": 74.07,
+          "periodLowValue": 320,
+          "periodMediumPct": 23.38,
+          "periodMediumValue": 101,
+          "target": 917,
+          "value": 432
         }
       ],
-      "percentage": 209.2,
-      "totalTarget": 2740,
-      "totalValue": 5731,
+      "percentage": 168.9,
+      "totalTarget": 3453,
+      "totalValue": 5832,
       "type": 1
     }
   },
   "sportDataSummary": {
-    "count": 1995,
+    "count": 1997,
     "modelValidState": true,
     "userFirstViewTimestamp": 1599563520
   },
   "sportStatistic": [
     {
-      "avgHeartRate": 96,
+      "avgHeartRate": 97,
       "count": 7,
       "distance": 0.0,
-      "duration": 17023,
+      "duration": 16594,
       "sportType": 402,
-      "trainingLoad": 102
+      "trainingLoad": 103
     },
     {
       "avgHeartRate": 146,
-      "avgPace": 480,
-      "count": 11,
-      "distance": 138034.97,
-      "duration": 66205,
+      "avgPace": 469,
+      "count": 12,
+      "distance": 148210.66,
+      "duration": 69440,
       "sportType": 100,
-      "trainingLoad": 2251
+      "trainingLoad": 2351
     },
     {
       "avgHeartRate": 106,
@@ -7770,57 +7682,57 @@
       "trainingLoad": 10
     },
     {
-      "avgHeartRate": 124,
-      "count": 20,
-      "distance": 144597.43,
-      "duration": 85481,
+      "avgHeartRate": 126,
+      "count": 21,
+      "distance": 154773.13,
+      "duration": 88287,
       "sportType": 65535,
-      "trainingLoad": 2363
+      "trainingLoad": 2464
     }
   ],
   "summaryInfo": {
     "disAreaList": [
       {
         "index": 0,
-        "ratio": 36.9,
-        "value": 30842.69
+        "ratio": 37.2,
+        "value": 34844.39
       },
       {
         "index": 1,
-        "ratio": 50.7,
-        "value": 42370.0
+        "ratio": 50.9,
+        "value": 47708.0
       },
       {
         "index": 2,
-        "ratio": 7.3,
-        "value": 6129.0
+        "ratio": 6.8,
+        "value": 6421.0
       },
       {
         "index": 3,
-        "ratio": 2.5,
-        "value": 2097.0
+        "ratio": 2.4,
+        "value": 2287.0
       },
       {
         "index": 4,
-        "ratio": 0.3,
-        "value": 270.0
+        "ratio": 0.4,
+        "value": 334.0
       },
       {
         "index": 5,
-        "ratio": 1.2,
-        "value": 977.0
+        "ratio": 1.3,
+        "value": 1225.0
       },
       {
         "index": 6,
-        "ratio": 1.1,
-        "value": 888.0
+        "ratio": 1.0,
+        "value": 930.0
       }
     ],
     "distanceCountAreaList": [
       {
         "index": 0,
-        "ratio": 50.0,
-        "value": 11.0
+        "ratio": 45.5,
+        "value": 10.0
       },
       {
         "index": 1,
@@ -7829,8 +7741,8 @@
       },
       {
         "index": 2,
-        "ratio": 27.3,
-        "value": 6.0
+        "ratio": 31.8,
+        "value": 7.0
       },
       {
         "index": 3,
@@ -7851,22 +7763,22 @@
     "distanceTimeAreaList": [
       {
         "index": 0,
-        "ratio": 28.0,
-        "value": 25918.0
+        "ratio": 22.1,
+        "value": 19806.0
       },
       {
         "index": 1,
-        "ratio": 8.9,
+        "ratio": 9.2,
         "value": 8261.0
       },
       {
         "index": 2,
-        "ratio": 21.6,
-        "value": 19947.0
+        "ratio": 25.9,
+        "value": 23182.0
       },
       {
         "index": 3,
-        "ratio": 14.8,
+        "ratio": 15.3,
         "value": 13677.0
       },
       {
@@ -7876,29 +7788,29 @@
       },
       {
         "index": 5,
-        "ratio": 26.7,
+        "ratio": 27.5,
         "value": 24704.0
       }
     ],
     "distanceTlAreaList": [
       {
         "index": 0,
-        "ratio": 6.5,
-        "value": 156.0
+        "ratio": 5.5,
+        "value": 135.0
       },
       {
         "index": 1,
-        "ratio": 8.0,
+        "ratio": 7.8,
         "value": 192.0
       },
       {
         "index": 2,
-        "ratio": 34.7,
-        "value": 830.0
+        "ratio": 37.7,
+        "value": 930.0
       },
       {
         "index": 3,
-        "ratio": 13.6,
+        "ratio": 13.2,
         "value": 325.0
       },
       {
@@ -7908,62 +7820,62 @@
       },
       {
         "index": 5,
-        "ratio": 37.2,
+        "ratio": 35.8,
         "value": 888.0
       }
     ],
     "hrDisAreaList": [
       {
         "index": 0,
-        "ratio": 28.5,
-        "value": 42586.82
+        "ratio": 26.7,
+        "value": 41918.43
       },
       {
         "index": 1,
-        "ratio": 37.3,
-        "value": 55734.0
+        "ratio": 40.2,
+        "value": 63051.0
       },
       {
         "index": 2,
-        "ratio": 17.3,
-        "value": 25893.0
+        "ratio": 16.8,
+        "value": 26422.0
       },
       {
         "index": 3,
-        "ratio": 14.7,
-        "value": 22013.0
+        "ratio": 14.3,
+        "value": 22397.0
       },
       {
         "index": 4,
-        "ratio": 2.1,
+        "ratio": 2.0,
         "value": 3140.0
       },
       {
         "index": 5,
-        "ratio": 0.1,
+        "ratio": 0.0,
         "value": 56.0
       }
     ],
     "hrTimeAreaList": [
       {
         "index": 0,
-        "ratio": 45.4,
-        "value": 42019.0
+        "ratio": 40.7,
+        "value": 36510.0
       },
       {
         "index": 1,
-        "ratio": 29.7,
-        "value": 27459.0
+        "ratio": 33.2,
+        "value": 29769.0
       },
       {
         "index": 2,
-        "ratio": 13.6,
-        "value": 12546.0
+        "ratio": 14.2,
+        "value": 12736.0
       },
       {
         "index": 3,
-        "ratio": 10.4,
-        "value": 9589.0
+        "ratio": 10.8,
+        "value": 9721.0
       },
       {
         "index": 4,
@@ -7972,39 +7884,39 @@
       },
       {
         "index": 5,
-        "ratio": 0.0,
+        "ratio": 0.1,
         "value": 14.0
       }
     ],
     "hrTlAreaList": [
       {
         "index": 0,
-        "ratio": 15.1,
-        "value": 361.0
+        "ratio": 14.3,
+        "value": 352.0
       },
       {
         "index": 1,
-        "ratio": 32.8,
-        "value": 785.0
+        "ratio": 34.5,
+        "value": 852.0
       },
       {
         "index": 2,
-        "ratio": 22.9,
-        "value": 548.0
+        "ratio": 22.6,
+        "value": 558.0
       },
       {
         "index": 3,
-        "ratio": 25.2,
-        "value": 602.0
+        "ratio": 24.8,
+        "value": 613.0
       },
       {
         "index": 4,
-        "ratio": 3.9,
+        "ratio": 3.8,
         "value": 93.0
       },
       {
         "index": 5,
-        "ratio": 0.1,
+        "ratio": 0.0,
         "value": 2.0
       }
     ],
@@ -8012,255 +7924,79 @@
     "timeAreaList": [
       {
         "index": 0,
-        "ratio": 40.6,
-        "value": 10668.0
+        "ratio": 40.5,
+        "value": 11945.0
       },
       {
         "index": 1,
-        "ratio": 47.8,
-        "value": 12569.0
+        "ratio": 48.3,
+        "value": 14237.0
       },
       {
         "index": 2,
-        "ratio": 6.6,
-        "value": 1738.0
+        "ratio": 6.3,
+        "value": 1844.0
       },
       {
         "index": 3,
         "ratio": 2.3,
-        "value": 616.0
+        "value": 680.0
       },
       {
         "index": 4,
-        "ratio": 0.3,
-        "value": 84.0
+        "ratio": 0.4,
+        "value": 106.0
       },
       {
         "index": 5,
-        "ratio": 1.2,
-        "value": 308.0
+        "ratio": 1.3,
+        "value": 394.0
       },
       {
         "index": 6,
-        "ratio": 1.2,
-        "value": 286.0
+        "ratio": 0.9,
+        "value": 298.0
       }
     ],
     "tlAreaList": [
       {
         "index": 0,
-        "ratio": 25.7,
-        "value": 261.0
+        "ratio": 26.4,
+        "value": 295.0
       },
       {
         "index": 1,
-        "ratio": 51.7,
-        "value": 526.0
+        "ratio": 51.3,
+        "value": 573.0
       },
       {
         "index": 2,
-        "ratio": 10.3,
-        "value": 105.0
+        "ratio": 9.8,
+        "value": 109.0
       },
       {
         "index": 3,
         "ratio": 3.8,
-        "value": 39.0
+        "value": 42.0
       },
       {
         "index": 4,
-        "ratio": 0.6,
-        "value": 6.0
+        "ratio": 0.7,
+        "value": 8.0
       },
       {
         "index": 5,
-        "ratio": 3.1,
-        "value": 32.0
+        "ratio": 3.6,
+        "value": 40.0
       },
       {
         "index": 6,
-        "ratio": 4.8,
-        "value": 48.0
+        "ratio": 4.4,
+        "value": 50.0
       }
     ]
   },
   "t7dayList": [
-    {
-      "ati": 18.0,
-      "avgSleepHrv": 61,
-      "ct7dMaxFixed": 935.2,
-      "ct7dMin": 358.4,
-      "cti": 64.0,
-      "distance": 0.0,
-      "distanceTarget": 0.0,
-      "duration": 0,
-      "durationTarget": 0,
-      "happenDay": 20260130,
-      "performance": -1,
-      "recomendTlMax": 894.6,
-      "recomendTlMin": 497.0,
-      "rhr": 51,
-      "sleepHrvBase": 61,
-      "sleepHrvIntervalList": [
-        5,
-        50,
-        56,
-        66
-      ],
-      "t28d": 1334,
-      "t7d": 33,
-      "testRhr": 51,
-      "tib": 46.0,
-      "timestamp": 1769702400,
-      "tiredRate": 11.0,
-      "tiredRateNew": -46.0,
-      "tiredRateNewZoneList": [
-        {
-          "max": -32.0,
-          "min": -64.0,
-          "type": 1
-        },
-        {
-          "max": -6.4,
-          "min": -32.0,
-          "type": 2
-        },
-        {
-          "max": 3.2,
-          "min": -6.4,
-          "type": 3
-        },
-        {
-          "max": 51.2,
-          "min": 3.2,
-          "type": 4
-        },
-        {
-          "min": 51.2,
-          "type": 5
-        }
-      ],
-      "tiredRateStateNew": 1,
-      "trainingLoad": 0,
-      "trainingLoadRatio": 0.28,
-      "trainingLoadRatioState": 1,
-      "trainingLoadRatioZoneList": [
-        {
-          "max": 0.5,
-          "min": 0.0,
-          "type": 1
-        },
-        {
-          "max": 0.8,
-          "min": 0.5,
-          "type": 2
-        },
-        {
-          "max": 1.0,
-          "min": 0.8,
-          "type": 3
-        },
-        {
-          "max": 1.5,
-          "min": 1.0,
-          "type": 4
-        },
-        {
-          "max": 1.8,
-          "min": 1.5,
-          "type": 5
-        }
-      ],
-      "trainingLoadTarget": 0.0
-    },
-    {
-      "ati": 19.0,
-      "avgSleepHrv": 60,
-      "ct7dMaxFixed": 915.6,
-      "ct7dMin": 352.8,
-      "cti": 63.0,
-      "distance": 0.0,
-      "distanceTarget": 0.0,
-      "duration": 0,
-      "durationTarget": 0,
-      "happenDay": 20260131,
-      "performance": -1,
-      "recomendTlMax": 894.6,
-      "recomendTlMin": 497.0,
-      "rhr": 47,
-      "sleepHrvBase": 61,
-      "sleepHrvIntervalList": [
-        5,
-        51,
-        56,
-        66
-      ],
-      "t28d": 1074,
-      "t7d": 55,
-      "testRhr": 50,
-      "tib": 44.0,
-      "timestamp": 1769788800,
-      "tiredRate": 12.0,
-      "tiredRateNew": -44.0,
-      "tiredRateNewZoneList": [
-        {
-          "max": -31.5,
-          "min": -63.0,
-          "type": 1
-        },
-        {
-          "max": -6.300000000000001,
-          "min": -31.5,
-          "type": 2
-        },
-        {
-          "max": 3.1500000000000004,
-          "min": -6.300000000000001,
-          "type": 3
-        },
-        {
-          "max": 50.400000000000006,
-          "min": 3.1500000000000004,
-          "type": 4
-        },
-        {
-          "min": 50.400000000000006,
-          "type": 5
-        }
-      ],
-      "tiredRateStateNew": 1,
-      "trainingLoad": 22,
-      "trainingLoadRatio": 0.3,
-      "trainingLoadRatioState": 1,
-      "trainingLoadRatioZoneList": [
-        {
-          "max": 0.5,
-          "min": 0.0,
-          "type": 1
-        },
-        {
-          "max": 0.8,
-          "min": 0.5,
-          "type": 2
-        },
-        {
-          "max": 1.0,
-          "min": 0.8,
-          "type": 3
-        },
-        {
-          "max": 1.5,
-          "min": 1.0,
-          "type": 4
-        },
-        {
-          "max": 1.8,
-          "min": 1.5,
-          "type": 5
-        }
-      ],
-      "trainingLoadTarget": 0.0
-    },
     {
       "ati": 28.0,
       "avgSleepHrv": 63,
@@ -10502,17 +10238,19 @@
       "trainingLoadTarget": 0.0
     },
     {
-      "ati": 75.0,
+      "ati": 90.0,
       "avgSleepHrv": 70,
-      "ct7dMaxFixed": 908.6,
-      "ct7dMin": 420.0,
-      "cti": 75.0,
+      "ct7dMaxFixed": 860.3,
+      "ct7dMin": 431.2,
+      "cti": 77.0,
       "distance": 0.0,
       "distanceTarget": 0.0,
       "duration": 0,
       "durationTarget": 0,
       "happenDay": 20260226,
-      "performance": -1,
+      "lthr": 170,
+      "ltsp": 226,
+      "performance": 3,
       "recomendTlMax": 932.4,
       "recomendTlMin": 518.0,
       "rhr": 48,
@@ -10523,13 +10261,104 @@
         57,
         67
       ],
-      "t28d": 2391,
-      "t7d": 553,
+      "staminaLevel": 94.2,
+      "staminaLevel7d": 102.0,
+      "t28d": 2492,
+      "t7d": 654,
       "testRhr": 51,
-      "tib": 0.0,
+      "tib": -13.0,
       "timestamp": 1772035200,
-      "tiredRate": 43.0,
-      "tiredRateNew": 0.0,
+      "tiredRate": 51.0,
+      "tiredRateNew": 13.0,
+      "tiredRateNewZoneList": [
+        {
+          "max": -38.5,
+          "min": -77.0,
+          "type": 1
+        },
+        {
+          "max": -7.7,
+          "min": -38.5,
+          "type": 2
+        },
+        {
+          "max": 3.85,
+          "min": -7.7,
+          "type": 3
+        },
+        {
+          "max": 38.5,
+          "min": 3.85,
+          "type": 4
+        },
+        {
+          "min": 38.5,
+          "type": 5
+        }
+      ],
+      "tiredRateStateNew": 4,
+      "trainingLoad": 101,
+      "trainingLoadRatio": 1.16,
+      "trainingLoadRatioState": 4,
+      "trainingLoadRatioZoneList": [
+        {
+          "max": 0.5,
+          "min": 0.0,
+          "type": 1
+        },
+        {
+          "max": 0.8,
+          "min": 0.5,
+          "type": 2
+        },
+        {
+          "max": 1.0,
+          "min": 0.8,
+          "type": 3
+        },
+        {
+          "max": 1.5,
+          "min": 1.0,
+          "type": 4
+        },
+        {
+          "max": 1.8,
+          "min": 1.5,
+          "type": 5
+        }
+      ],
+      "trainingLoadTarget": 0.0,
+      "vo2max": 57
+    },
+    {
+      "ati": 77.0,
+      "avgSleepHrv": 56,
+      "ct7dMaxFixed": 863.1,
+      "ct7dMin": 420.0,
+      "cti": 75.0,
+      "distance": 0.0,
+      "distanceTarget": 0.0,
+      "duration": 0,
+      "durationTarget": 0,
+      "happenDay": 20260227,
+      "performance": -1,
+      "recomendTlMax": 932.4,
+      "recomendTlMin": 518.0,
+      "rhr": 53,
+      "sleepHrvBase": 63,
+      "sleepHrvIntervalList": [
+        5,
+        52,
+        58,
+        68
+      ],
+      "t28d": 2492,
+      "t7d": 567,
+      "testRhr": 53,
+      "tib": -2.0,
+      "timestamp": 1772121600,
+      "tiredRate": 44.0,
+      "tiredRateNew": 2.0,
       "tiredRateNewZoneList": [
         {
           "max": -37.5,
@@ -10558,8 +10387,96 @@
       ],
       "tiredRateStateNew": 3,
       "trainingLoad": 0,
-      "trainingLoadRatio": 1.0,
+      "trainingLoadRatio": 1.02,
       "trainingLoadRatioState": 4,
+      "trainingLoadRatioZoneList": [
+        {
+          "max": 0.5,
+          "min": 0.0,
+          "type": 1
+        },
+        {
+          "max": 0.8,
+          "min": 0.5,
+          "type": 2
+        },
+        {
+          "max": 1.0,
+          "min": 0.8,
+          "type": 3
+        },
+        {
+          "max": 1.5,
+          "min": 1.0,
+          "type": 4
+        },
+        {
+          "max": 1.8,
+          "min": 1.5,
+          "type": 5
+        }
+      ],
+      "trainingLoadTarget": 0.0
+    },
+    {
+      "ati": 66.0,
+      "avgSleepHrv": 59,
+      "ct7dMaxFixed": 899.5,
+      "ct7dMin": 408.8,
+      "cti": 73.0,
+      "distance": 0.0,
+      "distanceTarget": 0.0,
+      "duration": 0,
+      "durationTarget": 0,
+      "happenDay": 20260228,
+      "performance": -1,
+      "recomendTlMax": 932.4,
+      "recomendTlMin": 518.0,
+      "rhr": 49,
+      "sleepHrvBase": 63,
+      "sleepHrvIntervalList": [
+        5,
+        52,
+        58,
+        68
+      ],
+      "t28d": 2470,
+      "t7d": 432,
+      "testRhr": 53,
+      "tib": 7.0,
+      "timestamp": 1772208000,
+      "tiredRate": 42.0,
+      "tiredRateNew": -7.0,
+      "tiredRateNewZoneList": [
+        {
+          "max": -36.5,
+          "min": -73.0,
+          "type": 1
+        },
+        {
+          "max": -7.300000000000001,
+          "min": -36.5,
+          "type": 2
+        },
+        {
+          "max": 3.6500000000000004,
+          "min": -7.300000000000001,
+          "type": 3
+        },
+        {
+          "max": 58.400000000000006,
+          "min": 3.6500000000000004,
+          "type": 4
+        },
+        {
+          "min": 58.400000000000006,
+          "type": 5
+        }
+      ],
+      "tiredRateStateNew": 3,
+      "trainingLoad": 0,
+      "trainingLoadRatio": 0.9,
+      "trainingLoadRatioState": 3,
       "trainingLoadRatioZoneList": [
         {
           "max": 0.5,
@@ -10595,98 +10512,98 @@
     "detailList": [
       {
         "count": 0,
-        "firstDayOfWeek": 20250912,
-        "firstDayOfWeekTimestamp": 1757606400,
-        "lastDayInWeek": 20251009,
-        "lastDayOfWeekTimestamp": 1759939200,
-        "periodHighPct": 4.44,
-        "periodHighValue": 107,
-        "periodLowPct": 33.25,
-        "periodLowValue": 802,
-        "periodMediumPct": 62.31,
-        "periodMediumValue": 1503,
+        "firstDayOfWeek": 20250914,
+        "firstDayOfWeekTimestamp": 1757779200,
+        "lastDayInWeek": 20251011,
+        "lastDayOfWeekTimestamp": 1760112000,
+        "periodHighPct": 5.27,
+        "periodHighValue": 95,
+        "periodLowPct": 36.68,
+        "periodLowValue": 661,
+        "periodMediumPct": 58.05,
+        "periodMediumValue": 1046,
         "target": 0,
-        "value": 2412
+        "value": 1802
       },
       {
         "count": 0,
-        "firstDayOfWeek": 20251010,
-        "firstDayOfWeekTimestamp": 1760025600,
-        "lastDayInWeek": 20251106,
-        "lastDayOfWeekTimestamp": 1762358400,
-        "periodHighPct": 2.23,
+        "firstDayOfWeek": 20251012,
+        "firstDayOfWeekTimestamp": 1760198400,
+        "lastDayInWeek": 20251108,
+        "lastDayOfWeekTimestamp": 1762531200,
+        "periodHighPct": 2.29,
         "periodHighValue": 63,
-        "periodLowPct": 72.01,
-        "periodLowValue": 2038,
-        "periodMediumPct": 25.76,
+        "periodLowPct": 71.27,
+        "periodLowValue": 1965,
+        "periodMediumPct": 26.44,
         "periodMediumValue": 729,
         "target": 0,
-        "value": 2830
+        "value": 2757
       },
       {
         "count": 0,
-        "firstDayOfWeek": 20251107,
-        "firstDayOfWeekTimestamp": 1762444800,
-        "lastDayInWeek": 20251204,
-        "lastDayOfWeekTimestamp": 1764777600,
-        "periodHighPct": 3.16,
-        "periodHighValue": 91,
-        "periodLowPct": 53.34,
-        "periodLowValue": 1539,
-        "periodMediumPct": 43.5,
-        "periodMediumValue": 1255,
+        "firstDayOfWeek": 20251109,
+        "firstDayOfWeekTimestamp": 1762617600,
+        "lastDayInWeek": 20251206,
+        "lastDayOfWeekTimestamp": 1764950400,
+        "periodHighPct": 2.93,
+        "periodHighValue": 95,
+        "periodLowPct": 53.68,
+        "periodLowValue": 1738,
+        "periodMediumPct": 43.39,
+        "periodMediumValue": 1405,
         "target": 0,
-        "value": 2885
+        "value": 3238
       },
       {
         "count": 0,
-        "firstDayOfWeek": 20251205,
-        "firstDayOfWeekTimestamp": 1764864000,
-        "lastDayInWeek": 20260101,
-        "lastDayOfWeekTimestamp": 1767196800,
-        "periodHighPct": 10.85,
-        "periodHighValue": 256,
-        "periodLowPct": 65.75,
-        "periodLowValue": 1551,
-        "periodMediumPct": 23.4,
-        "periodMediumValue": 552,
+        "firstDayOfWeek": 20251207,
+        "firstDayOfWeekTimestamp": 1765036800,
+        "lastDayInWeek": 20260103,
+        "lastDayOfWeekTimestamp": 1767369600,
+        "periodHighPct": 11.01,
+        "periodHighValue": 252,
+        "periodLowPct": 67.92,
+        "periodLowValue": 1554,
+        "periodMediumPct": 21.07,
+        "periodMediumValue": 482,
         "target": 0,
-        "value": 2359
+        "value": 2288
       },
       {
         "count": 0,
-        "firstDayOfWeek": 20260102,
-        "firstDayOfWeekTimestamp": 1767283200,
-        "lastDayInWeek": 20260129,
-        "lastDayOfWeekTimestamp": 1769616000,
-        "periodHighPct": 3.52,
+        "firstDayOfWeek": 20260104,
+        "firstDayOfWeekTimestamp": 1767456000,
+        "lastDayInWeek": 20260131,
+        "lastDayOfWeekTimestamp": 1769788800,
+        "periodHighPct": 4.37,
         "periodHighValue": 47,
-        "periodLowPct": 70.54,
-        "periodLowValue": 941,
-        "periodMediumPct": 25.94,
-        "periodMediumValue": 346,
+        "periodLowPct": 70.86,
+        "periodLowValue": 761,
+        "periodMediumPct": 24.77,
+        "periodMediumValue": 266,
         "target": 0,
-        "value": 1334
+        "value": 1074
       },
       {
         "count": 0,
-        "firstDayOfWeek": 20260130,
-        "firstDayOfWeekTimestamp": 1769702400,
-        "lastDayInWeek": 20260226,
-        "lastDayOfWeekTimestamp": 1772035200,
-        "periodHighPct": 3.6,
-        "periodHighValue": 86,
-        "periodLowPct": 66.29,
-        "periodLowValue": 1585,
-        "periodMediumPct": 30.11,
-        "periodMediumValue": 720,
+        "firstDayOfWeek": 20260201,
+        "firstDayOfWeekTimestamp": 1769875200,
+        "lastDayInWeek": 20260228,
+        "lastDayOfWeekTimestamp": 1772208000,
+        "periodHighPct": 3.93,
+        "periodHighValue": 97,
+        "periodLowPct": 66.6,
+        "periodLowValue": 1645,
+        "periodMediumPct": 29.47,
+        "periodMediumValue": 728,
         "target": 0,
-        "value": 2391
+        "value": 2470
       }
     ],
     "percentage": 0.0,
     "totalTarget": 0,
-    "totalValue": 14211,
+    "totalValue": 13629,
     "type": 2
   },
   "trainingWeekStageList": [],
@@ -10731,7 +10648,7 @@
       "firstDayOfWeek": 20260223,
       "recomendTlMax": 932.4,
       "recomendTlMin": 518.0,
-      "trainingLoad": 331
+      "trainingLoad": 432
     },
     {
       "firstDayOfWeek": 20260126,

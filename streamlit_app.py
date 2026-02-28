@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import math
 import os
+import re
 import sys
 from datetime import datetime, timedelta, date
 from pathlib import Path
@@ -12,6 +13,7 @@ from pathlib import Path
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+import requests
 import streamlit as st
 
 # ──────────────────────────────────────────────
@@ -121,6 +123,268 @@ def fatigue_state_text(state: int) -> tuple[str, str]:
         5: ("非常疲劳", "🔴"),
     }
     return mapping.get(state, ("未知", "⚪"))
+
+
+# ──────────────────────────────────────────────
+# Import plan to COROS
+# ──────────────────────────────────────────────
+COROS_LOGIN_URL = "https://t.coros.com/login"
+SECRETS_FILE = Path(__file__).parent / ".streamlit" / "secrets.toml"
+
+
+def parse_curl_credentials(curl_text: str) -> dict | None:
+    """Extract accesstoken, cookies, and userId from a pasted curl command."""
+    creds: dict[str, str] = {}
+
+    token_m = re.search(r"-H\s+['\"]accesstoken:\s*([^'\"]+)['\"]", curl_text)
+    if token_m:
+        creds["access_token"] = token_m.group(1).strip()
+
+    cookie_m = re.search(r"-b\s+['\"]([^'\"]+)['\"]", curl_text)
+    if cookie_m:
+        cookie_str = cookie_m.group(1)
+        for name, key in [("_c_WBKFRo", "cookie_wbkfro"), ("CPL-coros-region", "cookie_region")]:
+            m = re.search(rf"{re.escape(name)}=([^;\s]+)", cookie_str)
+            if m:
+                creds[key] = m.group(1).strip()
+
+    yf_m = re.search(r"""yfheader:\s*['"]\s*(\{[^}]+\})""", curl_text)
+    if yf_m:
+        try:
+            yf = json.loads(yf_m.group(1))
+            if "userId" in yf:
+                creds["user_id"] = str(yf["userId"])
+        except (json.JSONDecodeError, KeyError):
+            pass
+
+    return creds if "access_token" in creds else None
+
+
+def save_secrets_toml(creds: dict):
+    """Write updated credentials to .streamlit/secrets.toml."""
+    user_id = creds.get("user_id", os.environ.get("COROS_USER_ID", ""))
+    region = creds.get("cookie_region", os.environ.get("COROS_COOKIE_REGION", "2"))
+    base_url = os.environ.get("COROS_BASE_URL", "https://teamcnapi.coros.com")
+
+    content = (
+        "[coros]\n"
+        f'access_token = "{creds.get("access_token", "")}"\n'
+        f'user_id = "{user_id}"\n'
+        f'cookie_wbkfro = "{creds.get("cookie_wbkfro", "")}"\n'
+        f'cookie_region = "{region}"\n'
+        f'base_url = "{base_url}"\n'
+    )
+    SECRETS_FILE.parent.mkdir(parents=True, exist_ok=True)
+    SECRETS_FILE.write_text(content, encoding="utf-8")
+
+
+def apply_credentials(creds: dict):
+    """Push parsed credentials into env vars, persist to secrets.toml, and clear sync flag."""
+    for env_key, cred_key in [
+        ("COROS_ACCESS_TOKEN", "access_token"),
+        ("COROS_COOKIE_WBKFRO", "cookie_wbkfro"),
+        ("COROS_COOKIE_REGION", "cookie_region"),
+        ("COROS_USER_ID", "user_id"),
+    ]:
+        if cred_key in creds:
+            os.environ[env_key] = creds[cred_key]
+
+    save_secrets_toml(creds)
+    st.session_state.pop("data_synced", None)
+    st.session_state.pop("token_invalid", None)
+    load_json.clear()
+
+
+def show_token_invalid_guide(key_suffix: str = "main"):
+    """Display login link, curl paste box, and auto-parse credentials."""
+    st.error("Access Token 已失效，请重新登录获取")
+    st.markdown(f"""
+#### 🔑 步骤 1：[打开 COROS 登录页]({COROS_LOGIN_URL})，用 COROS App 扫码登录
+
+#### 📋 步骤 2：登录成功后复制一条 cURL
+1. 登录成功后页面会跳转到 COROS 主页（如未跳转，手动访问 [t.coros.com](https://t.coros.com)）
+2. **先按 F12** 打开开发者工具 → 切到 **Network** 标签
+3. **再按 Cmd+R 刷新页面**（Network 只记录打开后的请求）
+4. 在请求列表中找到任意 `teamcnapi.coros.com` 开头的请求
+5. **右键该请求 → Copy → Copy as cURL**
+
+#### 📥 步骤 3：粘贴到下方输入框
+""")
+
+    curl_text = st.text_area(
+        "粘贴 cURL 命令",
+        height=120,
+        placeholder="curl 'https://teamcnapi.coros.com/...' -H 'accesstoken: ...' -b '...' ...",
+        key=f"curl_input_{key_suffix}",
+    )
+
+    if st.button("🔄 更新凭据并重新同步", type="primary", key=f"apply_curl_{key_suffix}"):
+        if not curl_text or not curl_text.strip():
+            st.warning("请先粘贴 cURL 命令")
+            return
+        creds = parse_curl_credentials(curl_text)
+        if creds:
+            apply_credentials(creds)
+            token = creds["access_token"]
+            st.success(f"凭据已更新！Token: {token[:8]}...{token[-4:]}")
+            st.rerun()
+        else:
+            st.error("无法从 cURL 中解析出 accesstoken，请确认粘贴的是完整的 curl 命令")
+
+
+def import_plan_to_coros() -> tuple[bool, str]:
+    """Parse update plan body from save_plan.json, transform to add format, create new plan."""
+    save_file = DATA_DIR / "save_plan.json"
+    if not save_file.exists():
+        return False, "data/save_plan.json 文件不存在"
+
+    content = save_file.read_text(encoding="utf-8")
+
+    if "-- 修改计划" in content:
+        update_section = content.split("-- 修改计划", 1)[1]
+    else:
+        update_section = content
+
+    match = re.search(r"--data-raw \$?'(.+)'\s*$", update_section, re.MULTILINE)
+    if not match:
+        return False, "无法从 save_plan.json 解析修改计划的请求体"
+
+    raw_json = match.group(1)
+    raw_json = raw_json.replace("\\'", "'")
+    raw_json = raw_json.replace("\\\\", "\\")
+
+    try:
+        update_data = json.loads(raw_json)
+    except json.JSONDecodeError as e:
+        return False, f"JSON 解析错误: {e}"
+
+    now = datetime.now()
+    plan_name = f"训练计划_{now.strftime('%m%d_%H%M%S')}"
+
+    # --- Entities: keep only add-API fields ---
+    entities = []
+    for e in update_data.get("entities", []):
+        entities.append({
+            "happenDay": e.get("happenDay", ""),
+            "idInPlan": int(e["idInPlan"]) if e.get("idInPlan") is not None else 0,
+            "sortNo": e.get("sortNo", 0),
+            "dayNo": e.get("dayNo", 0),
+            "sortNoInPlan": e.get("sortNoInPlan", 0),
+            "sortNoInSchedule": e.get("sortNoInSchedule", 0),
+        })
+
+    # --- Programs: strip server-generated fields ---
+    PROG_STRIP = {
+        "id", "planId", "authorId", "createTimestamp", "deleted",
+        "estimatedDistance", "headPic", "nickname", "status",
+        "userId", "star", "isTargetTypeConsistent", "planIdIndex",
+        "sex", "profile", "shareUrl", "thirdPartyId",
+        "videoCoverUrl", "videoUrl", "onlyId", "fastIntensityTypeName",
+    }
+    EX_STRIP = {"userId", "status", "videoInfos"}
+
+    programs = []
+    for prog in update_data.get("programs", []):
+        clean = {}
+        for k, v in prog.items():
+            if k in PROG_STRIP:
+                continue
+            if k == "idInPlan":
+                clean[k] = int(v) if isinstance(v, str) else v
+            elif k == "exercises":
+                exs = []
+                for idx, ex in enumerate(v):
+                    cex = {ek: ev for ek, ev in ex.items() if ek not in EX_STRIP}
+                    cex["id"] = idx + 1
+                    exs.append(cex)
+                clean[k] = exs
+            elif k == "exerciseBarChart":
+                charts = []
+                for idx, ch in enumerate(v):
+                    c = dict(ch)
+                    c["exerciseId"] = str(idx + 1)
+                    charts.append(c)
+                clean[k] = charts
+            else:
+                clean[k] = v
+        clean.setdefault("version", 0)
+        clean["cardType"] = "program"
+        clean["dataType"] = "program"
+        programs.append(clean)
+
+    version_objects = []
+    for vo in update_data.get("versionObjects", []):
+        version_objects.append({"id": vo["id"], "status": vo.get("status", 1)})
+    if not version_objects and programs:
+        version_objects = [{"id": programs[0].get("idInPlan", 1), "status": 1}]
+
+    add_body = {
+        "name": plan_name,
+        "overview": update_data.get("overview", ""),
+        "entities": entities,
+        "programs": programs,
+        "weekStages": [],
+        "maxIdInPlan": update_data.get("maxIdInPlan", 1),
+        "totalDay": update_data.get("totalDay", 28),
+        "unit": update_data.get("unit", 0),
+        "sourceId": update_data.get("sourceId", ""),
+        "sourceUrl": update_data.get("sourceUrl", ""),
+        "minWeeks": update_data.get("minWeeks", 1),
+        "maxWeeks": update_data.get("maxWeeks", 4),
+        "region": update_data.get("region", 2),
+        "pbVersion": update_data.get("pbVersion", 2),
+        "versionObjects": version_objects,
+    }
+
+    # --- Call COROS add API ---
+    access_token = os.environ.get("COROS_ACCESS_TOKEN", "")
+    user_id = os.environ.get("COROS_USER_ID", "")
+    cookie_wbkfro = os.environ.get("COROS_COOKIE_WBKFRO", "")
+    cookie_region = os.environ.get("COROS_COOKIE_REGION", "2")
+    base_url = os.environ.get("COROS_BASE_URL", "https://teamcnapi.coros.com")
+
+    if not access_token or not user_id:
+        return False, "COROS 凭据未配置（需要 access_token 和 user_id）"
+
+    headers = {
+        "accept": "application/json, text/plain, */*",
+        "accesstoken": access_token,
+        "content-type": "application/json",
+        "origin": "https://t.coros.com",
+        "referer": "https://t.coros.com/",
+        "yfheader": json.dumps({"userId": user_id}),
+    }
+    cookies = {
+        "_c_WBKFRo": cookie_wbkfro,
+        "CPL-coros-region": cookie_region,
+        "CPL-coros-token": access_token,
+    }
+
+    try:
+        resp = requests.post(
+            f"{base_url}/training/plan/add",
+            headers=headers,
+            cookies=cookies,
+            json=add_body,
+            timeout=30,
+        )
+        result = resp.json()
+        if resp.status_code == 200 and str(result.get("result")) == "0000":
+            data = result.get("data", "")
+            plan_id = data.get("id", "") if isinstance(data, dict) else data
+            return True, f"计划「{plan_name}」创建成功！(planId: {plan_id})"
+
+        resp_text = json.dumps(result, ensure_ascii=False)
+        is_token_invalid = (
+            "token" in resp_text.lower() and "invalid" in resp_text.lower()
+        ) or str(result.get("result")) in ("1003", "1004")
+        if is_token_invalid:
+            return False, "__TOKEN_INVALID__"
+        return False, f"API 错误 ({resp.status_code}): {resp_text[:500]}"
+    except requests.RequestException as e:
+        return False, f"网络请求失败: {e}"
+    except Exception as e:
+        return False, f"导入失败: {e}"
 
 
 # ──────────────────────────────────────────────
@@ -284,9 +548,18 @@ if "data_synced" not in st.session_state:
                 fcd.sync_dashboard()
                 fcd._save_meta(fcd._load_meta())
                 st.toast("数据同步完成", icon="✅")
+        except fcd.TokenInvalidError:
+            st.session_state.token_invalid = True
         except Exception as e:
-            st.warning(f"同步异常: {e}，使用本地缓存")
+            if "token" in str(e).lower() and "invalid" in str(e).lower():
+                st.session_state.token_invalid = True
+            else:
+                st.warning(f"同步异常: {e}，使用本地缓存")
     st.session_state.data_synced = True
+
+# Show token guide outside the sync block so button clicks survive reruns
+if st.session_state.get("token_invalid"):
+    show_token_invalid_guide(key_suffix="sync")
 
 # ──────────────────────────────────────────────
 # Load data
@@ -447,7 +720,7 @@ with tab_dashboard:
 
     with col_rhr:
         st.subheader("静息心率")
-        rhr_vals = [(d["happenDay"], d["rhr"]) for d in day_list if d.get("rhr")]
+        rhr_vals = [(d["happenDay"], d["testRhr"]) for d in day_list if d.get("testRhr")]
         if rhr_vals:
             latest_rhr = rhr_vals[-1][1]
             min_rhr = min(v for _, v in rhr_vals)
@@ -1042,14 +1315,20 @@ with tab_plan:
             mime="application/json",
         )
 
-    with st.expander("💡 如何导入到 COROS"):
-        st.markdown("""
-**COROS 目前不支持通过文件直接导入训练计划**，但你可以通过以下方式使用：
+    st.divider()
+    st.subheader("导入计划到 COROS")
+    st.caption("读取 data/save_plan.json 中的修改计划数据，通过新增接口创建新计划（每次创建独立副本，名称带时间戳）")
 
-1. **COROS Team 日程**：打开 [t.coros.com](https://t.coros.com) → 日程 tab → 逐日添加计划训练
-2. **COROS App**：手机 App → 训练计划 → 手动创建每日训练
-3. **参考上方 Markdown 文件**：下载后打印或放在手机备忘录中，每天对照执行并在上方打勾
-
-> COROS 支持导入 `.fit` / `.tcx` 格式的**已完成活动**（通过日程页面的"导入"按钮），
-> 但训练计划需要手动在平台上创建。
-        """)
+    if st.button("🚀 导入计划到 COROS", type="primary"):
+        with st.spinner("正在创建新计划..."):
+            success, message = import_plan_to_coros()
+        if success:
+            st.toast(message, icon="✅")
+            st.success(message)
+            st.balloons()
+        elif message == "__TOKEN_INVALID__":
+            st.toast("Token 已失效，请更新凭据", icon="🔑")
+            show_token_invalid_guide(key_suffix="import")
+        else:
+            st.toast(message, icon="❌")
+            st.error(message)
