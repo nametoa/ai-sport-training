@@ -1,0 +1,49 @@
+name: Daily COROS Data Sync
+
+on:
+  schedule:
+    # 每天北京时间早上 7:00 (UTC 23:00 前一天) 自动同步
+    - cron: '0 23 * * *'
+  workflow_dispatch:  # 支持手动触发
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Sync COROS data
+        env:
+          COROS_ACCESS_TOKEN: ${{ secrets.COROS_ACCESS_TOKEN }}
+          COROS_USER_ID: ${{ secrets.COROS_USER_ID }}
+          COROS_COOKIE_WBKFRO: ${{ secrets.COROS_COOKIE_WBKFRO }}
+          COROS_COOKIE_REGION: ${{ secrets.COROS_COOKIE_REGION }}
+          COROS_BASE_URL: ${{ secrets.COROS_BASE_URL }}
+        run: python fetch_coros_data.py
+
+      - name: Export knowledge base
+        run: python export_knowledge.py
+
+      - name: Commit & push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/ knowledge/
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: daily COROS data sync $(date -u +%Y-%m-%d)"
+            git push
+          fi
